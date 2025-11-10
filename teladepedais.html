@@ -1602,6 +1602,34 @@
     margin-left: 5px;
     cursor: pointer;
 }
+.spinner {
+  border: 2px solid #f3f3f3; /* cor de fundo */
+  border-top: 2px solid #333; /* cor do spinner */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-left: 8px;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+.spinner2 {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
 
 </style>
 </head>
@@ -1716,7 +1744,11 @@
             <input id="inputHeightCm" type="number" placeholder="Comprimento (cm)" step="0.1">
             <div class="modal-buttons">
                 <button id="cancelBtn">Cancelar</button>
-                <button id="saveModalBtn">Salvar</button>
+                <button id="saveModalBtn">Salvar
+<span id="saveSpinner" class="spinner" style="display:none;"></span>
+
+                </button>
+
             </div>
         </div>
     </div>
@@ -1863,6 +1895,14 @@
     <button id="closeFundoModal">Fechar</button>
   </div>
 </div>
+<!-- Modal de carregamento -->
+<div id="loadingPedalboardModal" class="modal" style="display:none; justify-content:center; align-items:center; background: rgba(0,0,0,0.5);">
+  <div style="background:#070707; padding:20px; border-radius:10px; text-align:center;">
+    <div class="spinner2" style="margin-bottom:10px;"></div>
+    <span>Salvando pedalboard...</span>
+  </div>
+</div>
+
 <!-- Modal de carregamento -->
 <div id="loadingModal" style="
   display: none;
@@ -2824,6 +2864,14 @@ document.querySelectorAll(".addPedalBtn").forEach(btn => {
 
  // Salvar novo pedal/board
 saveModalBtn.addEventListener("click", async () => {
+    const spinner = document.createElement("span");
+    spinner.className = "spinner";
+    spinner.style.marginLeft = "8px";
+    saveModalBtn.appendChild(spinner);
+
+    // Desabilita botão para evitar múltiplos cliques
+    saveModalBtn.disabled = true;
+
     console.log("BoardMeta definido:", boardMeta);
 
     const nome = inputNome.value.trim();
@@ -2835,6 +2883,8 @@ saveModalBtn.addEventListener("click", async () => {
 
     if (!nome || (!file && !imagemUrl)) {
         alert("Nome e imagem são obrigatórios!");
+        saveModalBtn.disabled = false;
+        spinner.remove();
         return;
     }
 
@@ -2855,17 +2905,13 @@ saveModalBtn.addEventListener("click", async () => {
         formData.append("estilo", JSON.stringify(boardMeta.estilo));
     }
 
-    // 🟢 Adiciona imagem principal (arquivo ou URL)
     if (file) formData.append("imagem", file);
     else formData.append("imagem", imagemUrl);
 
-    // 🟢 Adiciona fundo (se existir)
     if (currentFundo) {
         if (currentFundo instanceof File) {
-            // Caso seja arquivo, envia corretamente
             formData.append("fundo", currentFundo);
         } else if (typeof currentFundo === "string") {
-            // Caso seja URL, também funciona
             formData.append("fundo", currentFundo);
         }
     }
@@ -2874,7 +2920,7 @@ saveModalBtn.addEventListener("click", async () => {
         const res = await fetch(url, {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
-            body: formData // 🔥 Não coloca Content-Type manualmente
+            body: formData
         });
 
         const resData = await res.json();
@@ -2882,7 +2928,6 @@ saveModalBtn.addEventListener("click", async () => {
         if (res.ok) {
             alert(`${creatingType} criado com sucesso!`);
 
-            // Atualiza dropdown de pedais ou boards
             if (creatingType === "pedal") {
                 const pedalSelect = document.getElementById("pedalSelect");
                 const option = document.createElement("option");
@@ -2910,6 +2955,10 @@ saveModalBtn.addEventListener("click", async () => {
     } catch (err) {
         console.error("Erro ao criar:", err);
         alert("Erro de conexão ao criar o item.");
+    } finally {
+        // Reabilita botão e remove spinner
+        saveModalBtn.disabled = false;
+        spinner.remove();
     }
 });
   //Carregar pedais e boards 
@@ -3765,6 +3814,12 @@ saveBtn.addEventListener('click', async () => {
         alert("Defina o pedalboard antes de salvar!");
         return;
     }
+  const loadingModal = document.getElementById("loadingPedalboardModal");
+    
+    // 🔹 Desabilita o botão para evitar múltiplos cliques
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Salvando..."; // opcional, muda o texto
+    loadingModal.style.display = "flex"; // mostra modal de loading
 
     try {
         // Gera a imagem da área de pedais
@@ -3821,6 +3876,9 @@ if (objects && objects.length > 0) {
     } catch (err) {
         console.error("Erro ao salvar pedalboard:", err);
         alert("Erro de conexão ao salvar pedalboard.");
+    }
+    finally {
+        loadingModal.style.display = "none"; // 🔹 esconde modal
     }
 });
 boardArea.addEventListener("click", () => {
