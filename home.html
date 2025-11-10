@@ -1180,27 +1180,35 @@ async function mostrarTodosEstilos() {
       });
     });
 
-    Object.entries(pedalboardsPorEstilo).forEach(([estilo, lista]) => {
-      if (lista.length === 0) return;
+Object.entries(pedalboardsPorEstilo).forEach(([estilo, lista]) => {
+  if (lista.length === 0) return;
 
-      const section = document.createElement("section");
-      section.className = "category estilo-dinamico";
-      section.innerHTML = `
-        <h2>${estilo}</h2>
-        <div class="carousel-wrapper">
-          <button class="scroll-btn left" data-target="boards-${estilo}">&#10094;</button>
-          <div class="cards-container" id="boards-${estilo}"></div>
-          <button class="scroll-btn right" data-target="boards-${estilo}">&#10095;</button>
-        </div>
-      `;
+  // ignora se já existe uma seção com esse estilo
+  if (document.querySelector(`section.category.estilo-dinamico h2:nth-of-type(1)`)?.textContent === estilo) return;
 
-      const footer = document.querySelector("footer");
-      document.body.insertBefore(section, footer);
+  if (document.querySelectorAll(`section.category h2`).length) {
+    const existe = Array.from(document.querySelectorAll('section.category h2'))
+                        .some(h2 => h2.textContent === estilo);
+    if (existe) return;
+  }
 
-      const container = section.querySelector(".cards-container");
-      lista.forEach(p => container.appendChild(criarCard(p)));
-    });
+  const section = document.createElement("section");
+  section.className = "category estilo-dinamico";
+  section.innerHTML = `
+    <h2>${estilo}</h2>
+    <div class="carousel-wrapper">
+      <button class="scroll-btn left" data-target="boards-${estilo}">&#10094;</button>
+      <div class="cards-container" id="boards-${estilo}"></div>
+      <button class="scroll-btn right" data-target="boards-${estilo}">&#10095;</button>
+    </div>
+  `;
 
+  const footer = document.querySelector("footer");
+  document.body.insertBefore(section, footer);
+
+  const container = section.querySelector(".cards-container");
+  lista.forEach(p => container.appendChild(criarCard(p)));
+});
     centralizarCards();
     atualizarSetas();
   } catch (err) {
