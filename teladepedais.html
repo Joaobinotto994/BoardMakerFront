@@ -88,17 +88,19 @@
             position: relative;
         }
 
-        #board-area {
-            width: 85%;
-            height: 85%;
-            background: #1c1c1c;
-            border: 3px dashed #333;
-            border-radius: 15px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.7);
-            
-        }
+#board-area {
+    width: 1260px;       /* largura fixa em px */
+    height: 700px;       /* altura fixa em px */
+    background: #1c1c1c;
+    border: 3px dashed #333;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+    /* 🔹 fixo para não alterar com zoom do navegador */
+    transform: scale(1);
+    transform-origin: top left;
+}
         #board-area {
   background-repeat: no-repeat;      /* impede repetição */
   background-size: 100% 100%;            /* ajusta a imagem para cobrir toda a área */
@@ -131,15 +133,15 @@
 
 
 
-        .placed-pedal, .placed-board {
-    width: auto; /* ajuste para o tamanho que você quer */
-    height: auto;
+.placed-pedal, .placed-board {
+    width: auto;   /* JS define em px */
+    height: auto;  /* JS define em px */
     position: absolute;
     cursor: grab;
     user-select: none;
-    transition: transform 0.2s;
     z-index: 1;
-        }
+    transform-origin: center center;
+}
 
 
 
@@ -154,9 +156,10 @@
             opacity: 0.9;
         }
 
-        .pedal-wrapper, .board-wrapper {
-            position: absolute;
-        }
+ .pedal-wrapper, .board-wrapper {
+    position: absolute; /* absoluto dentro do container fixo */
+    pointer-events: auto;
+}
 
         .btn-remove, .btn-rotate {
             display: none;
@@ -3311,8 +3314,8 @@ function carregarItemExistente(item, type) {
   const wrapper = document.createElement('div');
   wrapper.className = type === 'pedal' ? 'pedal-wrapper' : 'board-wrapper';
   wrapper.style.position = "absolute";
-  wrapper.style.left = (item.x || 0) + 'px';
-  wrapper.style.top = (item.y || 0) + 'px';
+  wrapper.style.left = (item.x || 0) + 'px';  // absoluto em px
+  wrapper.style.top = (item.y || 0) + 'px';   // absoluto em px
   wrapper.style.zIndex = item.zIndex || 10;
   wrapper.style.display = "inline-block";
 
@@ -3322,11 +3325,9 @@ function carregarItemExistente(item, type) {
   el.style.display = "block";
   el.style.objectFit = "fill";
 
-  // 🔹 Tamanho (usa cm → px)
   const scale = 10; // 1cm = 10px
-  let widthCm = item.widthCm ? Number(item.widthCm) : (type === 'pedal' ? 8 : 30);
-  let heightCm = item.heightCm ? Number(item.heightCm) : (type === 'pedal' ? 8 : 30);
-
+  const widthCm = item.widthCm ? Number(item.widthCm) : (type === 'pedal' ? 8 : 30);
+  const heightCm = item.heightCm ? Number(item.heightCm) : (type === 'pedal' ? 8 : 30);
   const widthPx = widthCm * scale;
   const heightPx = heightCm * scale;
 
@@ -3335,20 +3336,17 @@ function carregarItemExistente(item, type) {
   el.style.width = `${widthPx}px`;
   el.style.height = `${heightPx}px`;
 
-  // 🔹 Rotação
   wrapper.style.transform = `rotate(${Number(item.rotation) || 0}deg)`;
   wrapper.style.transformOrigin = 'center center';
 
   wrapper.appendChild(el);
   boardArea.appendChild(wrapper);
 
-  // ✅ Aqui está a correção principal:
-  // Garante que sempre exista um boardId válido e um id geral
   const itemWithId = {
     ...item,
-    id: item.id || item._id || item.pedalId || item.boardId?._id || item.boardId || `tmp-${Date.now()}`,
+    id: item.id || item._id || `tmp-${Date.now()}`,
     pedalId: item._id || item.pedalId || undefined,
-    boardId: item.boardId?._id || item.boardId || item.id || item._id, // 🔥 garante que sempre exista boardId
+    boardId: item.boardId?._id || item.boardId || item.id || item._id,
     nome: item.nome || item.pedalNome || "Sem nome",
     categoria: item.categoria || item.pedalCategoria || "Sem categoria",
     src: el.src,
@@ -3358,7 +3356,6 @@ function carregarItemExistente(item, type) {
     heightCm
   };
 
-  // 🔹 Adiciona nas listas certas
   if (type === 'pedal') {
     el.ondblclick = () => openSpecModal(itemWithId);
     placedPedals.push(itemWithId);
@@ -3366,10 +3363,8 @@ function carregarItemExistente(item, type) {
     placedBoards.push(itemWithId);
   }
 
-  // 🔹 Habilita drag & drop
   makeDraggable(wrapper, type, itemWithId);
 
-  // 🔹 Clique → mostra card de info
   el.addEventListener("click", (e) => {
     e.stopPropagation();
     document.querySelectorAll('.pedal-wrapper, .board-wrapper')

@@ -86,16 +86,19 @@
             align-items: center;
             position: relative;
         }
+
 #board-area {
-    width: 85%;
-    height: 85%;
+    width: 1260px;       /* largura fixa em px */
+    height: 700px;       /* altura fixa em px */
     background: #1c1c1c;
     border: 3px dashed #333;
     border-radius: 15px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(0,0,0,0.7);
-
+    /* 🔹 fixo para não alterar com zoom do navegador */
+    transform: scale(1);
+    transform-origin: top left;
     background-size: 100% 100%; /* ou 'contain' */
     background-position: center;
     background-repeat: no-repeat;
