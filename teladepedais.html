@@ -1663,7 +1663,6 @@
       <img id="cardBoardImg" src="" alt="Imagem do board">
       <div class="board-info-meta">
         <div id="cardBoardNome" class="board-name">Board sem nome</div>
-        <div id="cardBoardDescricao" class="board-desc">Sem descrição</div>
       </div>
     </div>
     <div class="board-info-actions">
@@ -1856,12 +1855,29 @@
     <div id="fundoList">
       <img src="/img/chão.jpg" class="fundoOption">
       <img src="/img/fundinho.png" class="fundoOption">
-      <img src="" class="fundoOption">
+      <img src="/img/playground.png" class="fundoOption">
+      <img src="/img/neutro.png" class="fundoOption">
     
     </div>
     <input type="file" id="uploadFundo" accept="image/*">
     <button id="closeFundoModal">Fechar</button>
   </div>
+</div>
+<!-- Modal de carregamento -->
+<div id="loadingModal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  font-size: 22px;
+  font-weight: 500;
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <div>Carregando imagem...</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -1921,6 +1937,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const cardPedalSpec = document.getElementById('cardPedalSpec');
     const cardAddSpecBtn = document.getElementById('cardAddSpecBtn');
     const cardRemoveFromBoardBtn = document.getElementById('cardRemoveFromBoardBtn');
+    const loadingModal = document.getElementById("loadingModal");
+
 
     let currentFundo = null;
     let creatingType = "";
@@ -2468,19 +2486,74 @@ fundoList.querySelectorAll(".fundoOption").forEach(img => {
   });
 });
 
-// Upload de fundo customizado
-uploadFundo.addEventListener("change", e => {
+// Função que envia a imagem em Base64 para o backend (que manda pro Cloudinary)
+// Função que envia a imagem em Base64 para o backend (que manda pro Cloudinary)
+async function uploadFundoParaCloudinary(base64Image) {
+  const token = localStorage.getItem("token");
+
+  try {
+    // Exibe o modal de carregamento
+    loadingModal.style.display = "flex";
+
+    const res = await fetch("https://boardmakerback.onrender.com/upload-fundo", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ image: base64Image })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Erro ao enviar fundo");
+    return data.url;
+  } catch (err) {
+    alert("Erro ao enviar imagem de fundo. Verifique a conexão ou o tamanho da imagem.");
+    throw err;
+  } finally {
+    // Sempre fecha o modal mesmo que ocorra erro
+    loadingModal.style.display = "none";
+  }
+}
+
+// Evento para upload de fundo customizado
+uploadFundo.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = () => {
-    boardArea.style.backgroundImage = `url(${reader.result})`;
-    currentFundo = reader.result; // base64
-    fundoModal.style.display = "none";
+
+  reader.onload = async () => {
+    try {
+      // Mostra o modal antes de começar a enviar
+      loadingModal.style.display = "flex";
+
+      const uploadedUrl = await uploadFundoParaCloudinary(reader.result);
+
+      // Cria um novo objeto Image para garantir que o fundo carregue antes de aplicar
+      const img = new Image();
+      img.src = uploadedUrl;
+      img.onload = () => {
+        boardArea.style.backgroundImage = `url(${uploadedUrl})`;
+        currentFundo = uploadedUrl;
+        fundoModal.style.display = "none";
+        loadingModal.style.display = "none"; // esconde quando terminar
+      };
+    } catch (err) {
+      console.error("Erro ao definir fundo:", err);
+      alert("Erro ao definir o fundo. Verifique a conexão e tente novamente.");
+      loadingModal.style.display = "none";
+    }
   };
+
+  reader.onerror = () => {
+    alert("Erro ao ler o arquivo de imagem");
+  };
+
   reader.readAsDataURL(file);
 });
+
 
     // IDs autorizados a verificar
     const usuariosVerificadores = ["68f2ac44a5bc316f26869a43"];
@@ -2495,7 +2568,7 @@ const searchBoards = async () => {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/boards/todos?search=${query}`, {
+    const res = await fetch(`https://boardmakerback.onrender.com/boards/todos?search=${query}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -2524,7 +2597,9 @@ const searchBoards = async () => {
 
       // imagem
       const img = document.createElement("img");
-      img.src = `http://localhost:3000${board.imagem}`;
+      img.src = board.imagem?.startsWith('http')
+  ? board.imagem
+  : `https://boardmakerback.onrender.com${board.imagem}`;
       img.alt = board.nome;
       img.style.width = "100%";
       img.style.height = "150px";
@@ -2549,7 +2624,7 @@ const searchBoards = async () => {
 
         verifyBtn.addEventListener("click", async () => {
           try {
-            const res = await fetch(`http://localhost:3000/boards/${board._id}/verificar`, {
+            const res = await fetch(`https://boardmakerback.onrender.com/boards/${board._id}/verificar`, {
               method: "PATCH",
               headers: { "Authorization": `Bearer ${token}` }
             });
@@ -2584,7 +2659,7 @@ const searchBoards = async () => {
       btn.addEventListener("click", async () => {
         const boardId = btn.dataset.id;
         try {
-          const res = await fetch(`http://localhost:3000/boards/copiar/${boardId}`, {
+          const res = await fetch(`https://boardmakerback.onrender.com/boards/copiar/${boardId}`, {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -2631,7 +2706,7 @@ searchBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/pedais/todos?search=${query}`, {
+    const res = await fetch(`https://boardmakerback.onrender.com/pedais/todos?search=${query}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -2657,7 +2732,9 @@ pedais.forEach(pedal => {
 
   // imagem
   const img = document.createElement("img");
-  img.src = `http://localhost:3000${pedal.imagem}`;
+  img.src = pedal.imagem.startsWith("http")
+  ? pedal.imagem
+  : `https://boardmakerback.onrender.com${pedal.imagem}`;
   img.alt = pedal.nome;
   img.style.width = "100%";
   img.style.height = "150px";
@@ -2687,7 +2764,7 @@ pedais.forEach(pedal => {
 
         verifyBtn.addEventListener("click", async () => {
           try {
-            const res = await fetch(`http://localhost:3000/pedais/${pedal._id}/verificar`, {
+            const res = await fetch(`https://boardmakerback.onrender.com/pedais/${pedal._id}/verificar`, {
               method: "PATCH",
               headers: { Authorization: `Bearer ${token}` },
             });
@@ -2723,7 +2800,7 @@ document.querySelectorAll(".addPedalBtn").forEach(btn => {
   btn.addEventListener("click", async () => {
     const pedalId = btn.dataset.id;
     try {
-      const res = await fetch(`http://localhost:3000/pedais/copiar/${pedalId}`, {
+      const res = await fetch(`https://boardmakerback.onrender.com/pedais/copiar/${pedalId}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -2745,9 +2822,10 @@ document.querySelectorAll(".addPedalBtn").forEach(btn => {
   }
 });
 
-  //Salvar novo pedal/board
+ // Salvar novo pedal/board
 saveModalBtn.addEventListener("click", async () => {
-     console.log("BoardMeta definido:", boardMeta); // <--- ADICIONE AQUI
+    console.log("BoardMeta definido:", boardMeta);
+
     const nome = inputNome.value.trim();
     const categoria = inputCategoria.value.trim();
     const file = inputUpload.files[0];
@@ -2760,9 +2838,10 @@ saveModalBtn.addEventListener("click", async () => {
         return;
     }
 
-    const url = creatingType === "pedal" 
-        ? "http://localhost:3000/pedais" 
-        : "http://localhost:3000/boards";
+    const url =
+        creatingType === "pedal"
+            ? "https://boardmakerback.onrender.com/pedais"
+            : "https://boardmakerback.onrender.com/boards";
 
     const formData = new FormData();
     formData.append("nome", nome);
@@ -2772,27 +2851,35 @@ saveModalBtn.addEventListener("click", async () => {
     if (creatingType === "pedal") {
         formData.append("categoria", categoria);
     }
-    if (creatingType === "board") {
-  formData.append("estilo", JSON.stringify(boardMeta.estilo));
-}
+    if (creatingType === "board" && boardMeta?.estilo) {
+        formData.append("estilo", JSON.stringify(boardMeta.estilo));
+    }
 
-    // Adiciona imagem (arquivo ou URL)
+    // 🟢 Adiciona imagem principal (arquivo ou URL)
     if (file) formData.append("imagem", file);
     else formData.append("imagem", imagemUrl);
 
-        if (currentFundo) {
-        formData.append("fundo", currentFundo);
+    // 🟢 Adiciona fundo (se existir)
+    if (currentFundo) {
+        if (currentFundo instanceof File) {
+            // Caso seja arquivo, envia corretamente
+            formData.append("fundo", currentFundo);
+        } else if (typeof currentFundo === "string") {
+            // Caso seja URL, também funciona
+            formData.append("fundo", currentFundo);
+        }
     }
 
     try {
         const res = await fetch(url, {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
-            body: formData
+            body: formData // 🔥 Não coloca Content-Type manualmente
         });
 
+        const resData = await res.json();
+
         if (res.ok) {
-            const resData = await res.json();
             alert(`${creatingType} criado com sucesso!`);
 
             // Atualiza dropdown de pedais ou boards
@@ -2806,7 +2893,6 @@ saveModalBtn.addEventListener("click", async () => {
                 option.dataset.height = resData.pedal?.heightCm || heightCm;
                 pedalSelect.appendChild(option);
             } else {
-                // boards: adiciona width/height no dataset
                 const boardSelect = document.getElementById("boardSelect");
                 const option = document.createElement("option");
                 option.value = file ? URL.createObjectURL(file) : imagemUrl;
@@ -2819,15 +2905,13 @@ saveModalBtn.addEventListener("click", async () => {
 
             closeModal();
         } else {
-            const errData = await res.json();
-            alert("Erro ao criar: " + (errData.error || "Desconhecido"));
+            alert("Erro ao criar: " + (resData.error || "Desconhecido"));
         }
     } catch (err) {
         console.error("Erro ao criar:", err);
         alert("Erro de conexão ao criar o item.");
     }
 });
-
   //Carregar pedais e boards 
 
 
@@ -2835,13 +2919,13 @@ saveModalBtn.addEventListener("click", async () => {
   // Reuse sua função utilitária (copie se não estiver no topo)
 function getImageUrl(path) {
   if (!path) return 'https://placehold.co/200x200?text=Sem+Imagem';
-  return path.startsWith('http') ? path : `http://localhost:3000${path.startsWith('/') ? path : '/' + path}`;
+  return path.startsWith('http') ? path : `https://boardmakerback.onrender.com${path.startsWith('/') ? path : '/' + path}`;
 }
 
 // ---------- carregarPedais (corrigido) ----------
 async function carregarPedais() {
   try {
-    const res = await fetch('http://localhost:3000/pedais', {
+    const res = await fetch('https://boardmakerback.onrender.com/pedais', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
     const pedais = await res.json();
@@ -2916,7 +3000,7 @@ async function carregarPedais() {
 
 async function carregarBoards() {
   try {
-    const res = await fetch("http://localhost:3000/boards", { 
+    const res = await fetch("https://boardmakerback.onrender.com/boards", { 
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
     });
     const boards = await res.json();
@@ -2961,7 +3045,11 @@ async function carregarBoards() {
         return;
       }
       let data = null;
-      try { if (val.trim().startsWith('{')) data = JSON.parse(val); } catch (err) { console.warn(err); }
+      try { 
+        if (val.trim().startsWith('{')) data = JSON.parse(val); 
+      } catch (err) { 
+        console.warn(err); 
+      }
       if (data && data.imagem) {
         previewBoard.src = data.imagem;
         previewBoard.style.display = 'block';
@@ -2972,7 +3060,9 @@ async function carregarBoards() {
         boardSelect.selectedBoardData = null;
       }
     }
-    boardSelect.removeEventListener('change', handleBoardChange).catch?.();
+
+    // ✅ Corrigido: não use .catch() aqui
+    boardSelect.removeEventListener('change', handleBoardChange);
     boardSelect.addEventListener('change', handleBoardChange);
 
   } catch (err) {
@@ -3102,7 +3192,7 @@ specModal.onclick = (e) => {
 if (boardId) {
         (async () => {
             try {
-                const res = await fetch(`http://localhost:3000/pedalboards/${boardId}`, {
+                const res = await fetch(`https://boardmakerback.onrender.com/pedalboards/${boardId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -3162,7 +3252,7 @@ function getImageUrl(path) {
   if (!path) return 'https://placehold.co/200x200?text=Sem+Imagem';
   return path.startsWith('http')
     ? path
-    : `http://localhost:3000${path.startsWith('/') ? path : '/' + path}`;
+    : `https://boardmakerback.onrender.com${path.startsWith('/') ? path : '/' + path}`;
 }
 
 // ====================
@@ -3183,7 +3273,7 @@ function carregarItemExistente(item, type) {
   el.style.display = "block";
   el.style.objectFit = "fill";
 
-  // Lógica de pegar tamanho do backend (ou default)
+  // 🔹 Tamanho (usa cm → px)
   const scale = 10; // 1cm = 10px
   let widthCm = item.widthCm ? Number(item.widthCm) : (type === 'pedal' ? 8 : 30);
   let heightCm = item.heightCm ? Number(item.heightCm) : (type === 'pedal' ? 8 : 30);
@@ -3191,23 +3281,25 @@ function carregarItemExistente(item, type) {
   const widthPx = widthCm * scale;
   const heightPx = heightCm * scale;
 
-  // Aplica tamanho no wrapper e na imagem
   wrapper.style.width = `${widthPx}px`;
   wrapper.style.height = `${heightPx}px`;
   el.style.width = `${widthPx}px`;
   el.style.height = `${heightPx}px`;
 
-  // Rotação
+  // 🔹 Rotação
   wrapper.style.transform = `rotate(${Number(item.rotation) || 0}deg)`;
   wrapper.style.transformOrigin = 'center center';
 
   wrapper.appendChild(el);
   boardArea.appendChild(wrapper);
 
+  // ✅ Aqui está a correção principal:
+  // Garante que sempre exista um boardId válido e um id geral
   const itemWithId = {
     ...item,
-    id: item.id || item._id || item.pedalId || item.boardId || `tmp-${Date.now()}`,
+    id: item.id || item._id || item.pedalId || item.boardId?._id || item.boardId || `tmp-${Date.now()}`,
     pedalId: item._id || item.pedalId || undefined,
+    boardId: item.boardId?._id || item.boardId || item.id || item._id, // 🔥 garante que sempre exista boardId
     nome: item.nome || item.pedalNome || "Sem nome",
     categoria: item.categoria || item.pedalCategoria || "Sem categoria",
     src: el.src,
@@ -3217,6 +3309,7 @@ function carregarItemExistente(item, type) {
     heightCm
   };
 
+  // 🔹 Adiciona nas listas certas
   if (type === 'pedal') {
     el.ondblclick = () => openSpecModal(itemWithId);
     placedPedals.push(itemWithId);
@@ -3224,8 +3317,10 @@ function carregarItemExistente(item, type) {
     placedBoards.push(itemWithId);
   }
 
+  // 🔹 Habilita drag & drop
   makeDraggable(wrapper, type, itemWithId);
 
+  // 🔹 Clique → mostra card de info
   el.addEventListener("click", (e) => {
     e.stopPropagation();
     document.querySelectorAll('.pedal-wrapper, .board-wrapper')
@@ -3237,7 +3332,6 @@ function carregarItemExistente(item, type) {
   });
 }
 
-
 // CARD DE INFO / SIDEBAR
 let pedalInfoCurrent = null; 
 let boardInfoCurrent = null;
@@ -3248,7 +3342,7 @@ async function renderPedalInfo(item, wrapper) {
 
   let pedalCompleto = null;
   try {
-    const res = await fetch(`http://localhost:3000/pedais/${item.pedalId}`, {
+    const res = await fetch(`https://boardmakerback.onrender.com/pedais/${item.pedalId}`, {
       headers: {
         "Authorization": `Bearer ${localStorage.getItem("token")}`
       }
@@ -3287,7 +3381,9 @@ async function renderBoardInfo(item, wrapper) {
 
   let boardCompleto = null;
   try {
-    const res = await fetch(`http://localhost:3000/boards/${item.boardId}`, {
+    // Aqui está o ajuste principal ↓↓↓
+    const boardId = item.boardId?._id || item.boardId || item.id || item._id;
+    const res = await fetch(`https://boardmakerback.onrender.com/boards/${boardId}`, {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     });
     if (res.ok) boardCompleto = await res.json();
@@ -3298,7 +3394,6 @@ async function renderBoardInfo(item, wrapper) {
   const imgUrl = getImageUrl(item.src || boardCompleto?.imagem);
   cardBoardImg.src = imgUrl;
   cardBoardNome.textContent = boardCompleto?.nome || item.nome || "Board sem nome";
-  cardBoardDescricao.textContent = boardCompleto?.descricao || item.descricao || "Sem descrição";
 
   boardInfoCard.style.display = 'block';
 }
@@ -3457,7 +3552,7 @@ boardArea.addEventListener('drop', async e => {
     const imgPath = src || '/uploads/imagem-placeholder.png';
     el.src = imgPath.startsWith('http')
         ? imgPath
-        : `http://localhost:3000${imgPath.startsWith('/') ? imgPath : '/' + imgPath}`;
+        : `https://boardmakerback.onrender.com${imgPath.startsWith('/') ? imgPath : '/' + imgPath}`;
     el.className = type === 'pedal' ? 'placed-pedal' : 'placed-board';
     el.style.display = "block";
     el.style.objectFit = "fill";
@@ -3598,7 +3693,7 @@ deleteBoardBtn.addEventListener('click', async () => {
   boardCardsContainer.innerHTML = ''; 
 
   try {
-    const res = await fetch('http://localhost:3000/boards', {
+    const res = await fetch('https://boardmakerback.onrender.com/boards', {
       headers: { Authorization: `Bearer ${token}` },
     });
     const boards = await res.json();
@@ -3617,7 +3712,7 @@ deleteBoardBtn.addEventListener('click', async () => {
       const img = document.createElement('img');
       img.src = board.imagem?.startsWith('http')
         ? board.imagem
-        : `http://localhost:3000${board.imagem}`;
+        : `https://boardmakerback.onrender.com${board.imagem}`;
       img.alt = board.nome;
 
       // nome do board
@@ -3633,7 +3728,7 @@ deleteBoardBtn.addEventListener('click', async () => {
       btnExcluir.addEventListener('click', async () => {
         if (confirm(`Excluir o board "${board.nome}"?`)) {
           try {
-            await fetch(`http://localhost:3000/boards/${board._id}`, {
+            await fetch(`https://boardmakerback.onrender.com/boards/${board._id}`, {
               method: 'DELETE',
               headers: { Authorization: `Bearer ${token}` },
             });
@@ -3706,8 +3801,8 @@ if (objects && objects.length > 0) {
   formData.append("annotations", JSON.stringify(objects));
 }
         const url = boardId 
-            ? `http://localhost:3000/pedalboards/${boardId}` 
-            : 'http://localhost:3000/pedalboards';
+            ? `https://boardmakerback.onrender.com/pedalboards/${boardId}` 
+            : 'https://boardmakerback.onrender.com/pedalboards';
 
         const res = await fetch(url, {
             method: boardId ? 'PUT' : 'POST',
@@ -3744,7 +3839,7 @@ deletePedalBtn.addEventListener('click', async () => {
     pedalCardsContainer.innerHTML = ''; 
 
     try {
-        const res = await fetch('http://localhost:3000/pedais', {
+        const res = await fetch('https://boardmakerback.onrender.com/pedais', {
             headers: { Authorization: `Bearer ${token}` },
         });
         const pedals = await res.json();
@@ -3761,7 +3856,7 @@ deletePedalBtn.addEventListener('click', async () => {
 
             // imagem
             const img = document.createElement("img");
-            img.src = pedal.imagem?.startsWith('http') ? pedal.imagem : `http://localhost:3000${pedal.imagem}`;
+            img.src = pedal.imagem?.startsWith('http') ? pedal.imagem : `https://boardmakerback.onrender.com${pedal.imagem}`;
             img.alt = pedal.nome;
             img.style.width = "100%";
             img.style.height = "150px";
@@ -3779,7 +3874,7 @@ deletePedalBtn.addEventListener('click', async () => {
             btnExcluir.addEventListener('click', async () => {
                 if (confirm(`Excluir o pedal "${pedal.nome}"?`)) {
                     try {
-                        await fetch(`http://localhost:3000/pedais/${pedal._id}`, {
+                        await fetch(`https://boardmakerback.onrender.com/pedais/${pedal._id}`, {
                             method: 'DELETE',
                             headers: { Authorization: `Bearer ${token}` }
                         });
@@ -3828,7 +3923,7 @@ deletePedalBtn.addEventListener('click', async () => {
   pedalCardsContainer.innerHTML = ''; 
 
   try {
-    const res = await fetch('http://localhost:3000/pedais', {
+    const res = await fetch('https://boardmakerback.onrender.com/pedais', {
       headers: { Authorization: `Bearer ${token}` },
     });
     const pedals = await res.json();
@@ -3845,7 +3940,7 @@ deletePedalBtn.addEventListener('click', async () => {
 
   // imagem
   const img = document.createElement('img');
-  img.src = pedal.imagem?.startsWith('http') ? pedal.imagem : `http://localhost:3000${pedal.imagem}`;
+  img.src = pedal.imagem?.startsWith('http') ? pedal.imagem : `https://boardmakerback.onrender.com${pedal.imagem}`;
   img.alt = pedal.nome;
 
   // nome do pedal
@@ -3860,7 +3955,7 @@ deletePedalBtn.addEventListener('click', async () => {
   btnExcluir.addEventListener('click', async () => {
     if (confirm(`Excluir o pedal "${pedal.nome}"?`)) {
       try {
-        await fetch(`http://localhost:3000/pedais/${pedal._id}`, {
+        await fetch(`https://boardmakerback.onrender.com/pedais/${pedal._id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` }
         });

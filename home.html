@@ -765,10 +765,39 @@ body.avatar-modal-open {
   border: 2px solid #444;
 }
 
-
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  backdrop-filter: blur(3px);
+}
+.spinner {
+  border: 6px solid #444;
+  border-top: 6px solid #fff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
   </style>
 </head>
 <body>
+
+  <div id="loader" class="loader-overlay">
+  <div class="spinner"></div>
+</div>
 <header class="header">
   <div class="header-left">
     <div class="logo">BOARDMAKER</div>
@@ -962,7 +991,7 @@ body.avatar-modal-open {
 </footer>
 
 <script>
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://boardmakerback.onrender.com";
 const token = localStorage.getItem("token");
 const userId = token ? JSON.parse(atob(token.split(".")[1])).id : null;
 const searchContainer = document.querySelector('.search-container');
@@ -987,7 +1016,15 @@ const cancelAvatarBtn = document.getElementById("cancelAvatarBtn");
   const modal = document.getElementById("modal");
   const closeModal = document.querySelector(".close-modal");
 
+function showLoader() {
+  const loader = document.getElementById("loader");
+  if (loader) loader.style.display = "flex";
+}
 
+function hideLoader() {
+  const loader = document.getElementById("loader");
+  if (loader) loader.style.display = "none";
+}
 
 
 
@@ -1338,6 +1375,16 @@ saveAvatarBtn.addEventListener("click", async () => {
 
   const links = document.querySelectorAll('.nav-links a');
 
+  showLoader();
+
+  await Promise.all([
+    carregarPedalboardsVerificados(token),
+    carregarMaisCurtidos(token),
+    carregarPedalboardsCurtidosPorUsuario(),
+    mostrarTodosEstilos()
+  ]);
+
+  hideLoader(); // 👈 só esconde quando tudo tiver sido carregado
 
 });
 
@@ -1362,6 +1409,9 @@ async function carregarPedalboardsVerificados(token) {
     atualizarSetas();
   } catch {
     container.innerHTML = "<p>Erro ao carregar pedalboards verificados</p>";
+  }
+   finally {
+    hideLoader(); // 👈 sempre esconde o modal, com sucesso ou erro
   }
 }
 
@@ -1388,6 +1438,9 @@ async function carregarMaisCurtidos(token) {
     atualizarSetas();
   } catch {
     container.innerHTML = "<p>Erro ao carregar pedalboards curtidos</p>";
+  }
+     finally {
+    hideLoader(); // 👈 sempre esconde o modal, com sucesso ou erro
   }
 }
 // Função para carregar pedalboards curtidos pelo usuário
@@ -1420,6 +1473,9 @@ async function carregarPedalboardsCurtidosPorUsuario() {
 
   } catch (err) {
     console.error("Erro ao carregar pedalboards curtidos:", err);
+  }
+     finally {
+    hideLoader(); // 👈 sempre esconde o modal, com sucesso ou erro
   }
 }
 
@@ -1472,6 +1528,9 @@ async function carregarTalvezGoste() {
   } catch (err) {
     console.error('Erro ao carregar "Talvez você goste":', err);
   }
+     finally {
+    hideLoader(); // 👈 sempre esconde o modal, com sucesso ou erro
+  }
 }
 
 function centralizarCards() {
@@ -1511,6 +1570,9 @@ async function buscarPedalboards() {
   } catch (err) {
     console.error(err);
     container.innerHTML = "<p>Erro ao buscar pedalboards</p>";
+  }
+     finally {
+    hideLoader(); // 👈 sempre esconde o modal, com sucesso ou erro
   }
 }
 // ===== BUSCA AVANÇADA (substitua/cole após suas outras funções) =====
@@ -1881,7 +1943,38 @@ searchBtn.addEventListener("click", (e) => {
     searchInput.value = "";
   }
 });
+// Mostrar o modal de carregamento
+const loadingModal = document.getElementById("loadingModal");
+loadingModal.style.display = "flex";
 
+window.addEventListener("load", async () => {
+  // Espera as funções que carregam as seções principais terminarem
+  try {
+    await Promise.all([
+      carregarPedalboardsVerificados(token),
+      carregarMaisCurtidos(token),
+      carregarPedalboardsCurtidosPorUsuario(),
+      mostrarTodosEstilos()
+    ]);
+  } catch (err) {
+    console.error("Erro ao carregar dados:", err);
+  }
+
+  // Aguarda todas as imagens da página carregarem
+  const imagens = Array.from(document.images);
+  await Promise.all(
+    imagens.map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise(resolve => {
+        img.onload = resolve;
+        img.onerror = resolve;
+      });
+    })
+  );
+
+  // Esconde o modal de carregamento
+  loadingModal.style.display = "none";
+});
 
 </script>
 </body>

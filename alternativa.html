@@ -174,7 +174,7 @@
       const pedais = Array.from(boardGrid.children).map(p => p.textContent);
 
       try {
-        const res = await fetch("http://localhost:3000/pedalboards", {
+        const res = await fetch("https://boardmakerback.onrender.com/pedalboards", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

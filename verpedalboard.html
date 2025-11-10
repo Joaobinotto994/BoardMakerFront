@@ -492,7 +492,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   const params = new URLSearchParams(window.location.search);
   const boardId = params.get("id");
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = 'https://boardmakerback.onrender.com';
 
   if (!boardId) {
     alert("Nenhum pedalboard selecionado.");
@@ -536,7 +536,7 @@ if (fundoUrl) {
   boardArea.style.backgroundPosition = 'center';
   boardArea.style.backgroundRepeat = 'no-repeat';
 } else {
-  boardArea.style.backgroundColor = '#f0f0f0';
+  boardArea.style.backgroundColor = '#1c1c1c';
 }
 
     const scale = 10; // 1cm = 10px
@@ -727,13 +727,12 @@ if (board.annotations && Array.isArray(board.annotations)) {
 
 document.getElementById("addBibliotecaBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch(`${BASE_URL}/pedalboards/duplicar/${boardId}`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    });
+const res = await fetch(`${BASE_URL}/pedalboards/duplicar/${boardId}`, {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${token}`
+  }
+});
 
     if (!res.ok) throw new Error("Falha ao duplicar o pedalboard");
 

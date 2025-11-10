@@ -581,12 +581,41 @@ body.avatar-modal-open {
   object-fit: cover;
   border: 2px solid #444;
 }
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  backdrop-filter: blur(3px);
+}
+.spinner {
+  border: 6px solid #444;
+  border-top: 6px solid #fff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 
   </style>
 </head>
 <body>
-
+<body>
+  <div id="loader" class="loader-overlay">
+    <div class="spinner"></div>
+  </div>
   <!-- Cabeçalho -->
  <header class="header">
   <div class="header-left">
@@ -683,8 +712,18 @@ body.avatar-modal-open {
   const pedalboardGrid = document.getElementById("pedalboardGrid");
       const usuariosVerificadores = ["68f2ac44a5bc316f26869a43"];
     const userId = localStorage.getItem("userId");
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://boardmakerback.onrender.com";
   // Mostra o nome do usuário
+
+  function showLoader() {
+  const loader = document.getElementById("loader");
+  if (loader) loader.style.display = "flex";
+}
+
+function hideLoader() {
+  const loader = document.getElementById("loader");
+  if (loader) loader.style.display = "none";
+}
   if (userName) {
     welcome.textContent = `Bem-vindo, ${userName}`;
   }
@@ -1059,25 +1098,31 @@ function criarCard(board) {
 
 
   // Carrega pedalboards do usuário logado
-  async function carregarMeusBoards() {
-    try {
-      const res = await fetch("http://localhost:3000/meus-pedalboards", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      
-      pedalboardGrid.innerHTML = "";
-      if (data.pedalboards && data.pedalboards.length > 0) {
-        data.pedalboards.forEach(criarCard);
-      } else {
-        pedalboardGrid.innerHTML = "<p style='text-align:center;color:#aaa'>Você ainda não tem nenhum pedalboard.</p>";
-      }
-    } catch (err) {
-      console.error("Erro ao carregar pedalboards:", err);
-      pedalboardGrid.innerHTML = "<p style='text-align:center;color:#ff3333'>Erro ao carregar seus pedalboards.</p>";
-    }
-  }
+async function carregarMeusBoards() {
+  showLoader(); // 👈 Mostra o loader antes de começar
 
+  try {
+    const res = await fetch("https://boardmakerback.onrender.com/meus-pedalboards", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    pedalboardGrid.innerHTML = "";
+    if (data.pedalboards && data.pedalboards.length > 0) {
+      data.pedalboards.forEach(criarCard);
+    } else {
+      pedalboardGrid.innerHTML = "<p style='text-align:center;color:#aaa'>Você ainda não tem nenhum pedalboard.</p>";
+    }
+  } catch (err) {
+    console.error("Erro ao carregar pedalboards:", err);
+    pedalboardGrid.innerHTML = "<p style='text-align:center;color:#ff3333'>Erro ao carregar seus pedalboards.</p>";
+  } finally {
+    hideLoader(); // 👈 Some com o loader sempre no fim
+  }
+}
+
+showLoader();
+carregarMeusBoards();
   carregarMeusBoards();
 
   // Pesquisa pedalboards de todos os usuários
@@ -1086,7 +1131,7 @@ function criarCard(board) {
     if (query.length < 2) return; // só pesquisa se tiver 2+ caracteres
 
     try {
-      const res = await fetch(`http://localhost:3000/pedalboards/search?q=${query}`, {
+      const res = await fetch(`https://boardmakerback.onrender.com/pedalboards/search?q=${query}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
