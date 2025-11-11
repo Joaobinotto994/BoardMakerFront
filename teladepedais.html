@@ -988,12 +988,13 @@
   box-sizing: border-box;
 
 
-  max-height: 300px;
+  max-height: 330px;
 
   overflow-y: auto;
   scrollbar-width: auto;
   scrollbar-color: #666 #1f1f1f;
   z-index: 100;
+  padding-bottom: 8px; /* espaço extra para o último item não ser cortado */
 }
 
 /* Scroll */
@@ -1062,6 +1063,11 @@
   background-color: #fff !important;  
 }
 
+/* Corrige corte do último item no dropdown */
+
+.choices__list--dropdown .choices__item--choice:last-child {
+  margin-bottom: 4px; /* assegura espaço visível após o último item */
+}
 
 #pedalboardToolbar {
   position: absolute;
@@ -1720,6 +1726,7 @@
     </div>
 </div>
 <div id="pedalboardToolbar">
+  <button id="infoBtn">Editar Infos(Nome,descrição...)</button>
   <button id="addFundoBtn">Fundo</button>
   <button id="pen-btn">🖊️</button>
   <button id="line-btn">📏</button>
@@ -1922,6 +1929,7 @@
 ">
   <div>Carregando imagem...</div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
@@ -1943,6 +1951,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cancelBtn = document.getElementById("cancelBtn");
     const saveModalBtn = document.getElementById("saveModalBtn");
     const saveBtn = document.getElementById("saveBtn");
+    const infoBtn = document.getElementById("infoBtn"); 
     const modalInicial = document.getElementById("modalInicial");
     const inputBoardNome = document.getElementById("inputBoardNome");
     const inputBoardArtista = document.getElementById("inputBoardArtista");
@@ -2026,35 +2035,85 @@ estilosSelecionadosContainer.appendChild(tag);
 
     
 
-  // Modal Inicial
-cancelInicialBtn.addEventListener("click", () => window.location.href = "telaprincipal.html");
+// ===== Modal Inicial =====
+document.addEventListener("DOMContentLoaded", () => {
+  const jaConfigurado = localStorage.getItem("boardConfigured");
+
+  // se ainda não foi configurado, mostra o modal inicial
+  if (!jaConfigurado) {
+    modalInicial.style.display = "flex";
+  } else {
+    modalInicial.style.display = "none";
+  }
+});
+
+infoBtn.addEventListener("click", () => {
+  // 🔹 Abre o modal
+  modalInicial.style.display = "flex";
+
+  // 🔹 Preenche os campos com os dados atuais
+  if (boardMeta) {
+    inputBoardNome.value = boardMeta.nome || "";
+    inputBoardArtista.value = boardMeta.artista || "";
+    inputBoardDescricao.value = boardMeta.descricao || "";
+
+    // Atualiza estilos selecionados
+    estilosSelecionadosContainer.innerHTML = "";
+    if (boardMeta.estilo && Array.isArray(boardMeta.estilo)) {
+      estilosSelecionados = [...boardMeta.estilo];
+
+      boardMeta.estilo.forEach(estilo => {
+        const tag = document.createElement("div");
+        tag.className = "estilo-tag";
+        tag.innerHTML = `${estilo} <span>✕</span>`;
+
+        tag.querySelector("span").addEventListener("click", (e) => {
+          e.stopPropagation();
+          estilosSelecionados = estilosSelecionados.filter(e2 => e2 !== estilo);
+          tag.remove();
+        });
+
+        estilosSelecionadosContainer.appendChild(tag);
+      });
+    }
+  }
+
+  // 🔹 Ajusta título e visibilidade dos botões, se quiser
+  modalInicial.querySelector("h2").innerText = "Editar informações do Board";
+  cancelInicialBtn.style.display = "inline-block";
+});
+cancelInicialBtn.addEventListener("click", () => {
+  window.location.href = "telaprincipal.html";
+});
 
 continuarInicialBtn.addEventListener("click", () => {
-if (
-  !inputBoardNome.value.trim() ||
-  !inputBoardArtista.value.trim() ||
-  !inputBoardDescricao.value.trim()
-) {
-  alert("Preencha todos os campos!");
-  return;
-}
+  if (
+    !inputBoardNome.value.trim() ||
+    !inputBoardArtista.value.trim() ||
+    !inputBoardDescricao.value.trim()
+  ) {
+    alert("Preencha todos os campos!");
+    return;
+  }
 
-// se o usuário não selecionou novos estilos, mantém os antigos
-if (estilosSelecionados.length === 0 && boardMeta?.estilo) {
-  estilosSelecionados = [...boardMeta.estilo];
-}
-
+  if (estilosSelecionados.length === 0 && boardMeta?.estilo) {
+    estilosSelecionados = [...boardMeta.estilo];
+  }
 
   boardMeta = {
     nome: inputBoardNome.value.trim(),
     artista: inputBoardArtista.value.trim(),
     descricao: inputBoardDescricao.value.trim(),
-    estilo:  estilosSelecionados, // 🔹 adiciona o estilo
+    estilo: estilosSelecionados,
     fundo: currentFundo
   };
 
+  // marca que o board foi configurado
+  localStorage.setItem("boardConfigured", "true");
+
   modalInicial.style.display = "none";
 });
+
 
 shareBtn.addEventListener("click", async () => {
   const boardArea = document.getElementById("board-area");
@@ -2087,28 +2146,31 @@ shareBtn.addEventListener("click", async () => {
   }
 });
 
+// Modais de criação
+function openModal(type) {
+  console.log("Abrindo modal:", type);
+  creatingType = type;
+  modal.style.display = "flex";
 
-  //Modais de criação
-   function openModal(type) {
-     console.log("Abrindo modal:", type);
-        creatingType = type;
-        modal.style.display = "flex";
-        inputNome.value = "";
-        inputCategoria.value = "";
-        inputWidthCm.style.display = "block";
-        inputHeightCm.style.display = "block";
-        inputImagem.value = "";
-        inputUpload.value = "";
-        modalPreview.src = "";
-        inputCategoria.style.display = type === "pedal" ? "block" : "none";
-    }
-async function waitForImages(container) {
-  const imgs = Array.from(container.querySelectorAll('img'));
-  await Promise.all(imgs.map(img => {
-    if (img.complete) return;
-    return new Promise(resolve => img.onload = img.onerror = resolve);
-  }));
+  // limpa campos
+  inputNome.value = "";
+  inputCategoria.value = "";
+  inputWidthCm.value = "";
+  inputHeightCm.value = "";
+  inputImagem.value = "";
+  inputUpload.value = "";
+  modalPreview.src = "";
+
+  // mostra categoria só se for pedal
+  inputCategoria.style.display = type === "pedal" ? "block" : "none";
+
+  // largura e altura sempre obrigatórias
+  inputWidthCm.setAttribute("required", "required");
+  inputHeightCm.setAttribute("required", "required");
+  inputWidthCm.placeholder = "Largura (cm)";
+  inputHeightCm.placeholder = "Comprimento (cm)";
 }
+
 
 //Tools
 document.getElementById('pen-btn').onclick = () => currentTool = 'pen';
@@ -2602,7 +2664,101 @@ uploadFundo.addEventListener("change", async (e) => {
     const usuariosVerificadores = ["68f2ac44a5bc316f26869a43"];
     const userId = localStorage.getItem("userId");
 
-// Buscar boards de todos os usuários
+// Função para renderizar cards de boards
+function renderBoards(boards) {
+  searchBoardResultsContainer.innerHTML = "";
+
+  if (!boards.length) {
+    searchBoardResultsContainer.innerHTML = "<p>Nenhum board encontrado.</p>";
+    return;
+  }
+
+  boards.forEach(board => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    // imagem
+    const img = document.createElement("img");
+    img.src = board.imagem?.startsWith('http')
+      ? board.imagem
+      : `https://boardmakerback.onrender.com${board.imagem}`;
+    img.alt = board.nome;
+    img.style.width = "100%";
+    img.style.height = "150px";
+    img.style.objectFit = "contain";
+
+    // nome
+    const nome = document.createElement("span");
+    nome.textContent = board.nome;
+    nome.classList.add("board-nome");
+
+    // botão adicionar
+    const btn = document.createElement("button");
+    btn.textContent = "Adicionar à minha biblioteca";
+    btn.dataset.id = board._id;
+    btn.classList.add("addBoardBtn");
+
+    // botão verificar (somente verificadores)
+    if (!board.verified && usuariosVerificadores.includes(userId)) {
+      const verifyBtn = document.createElement("button");
+      verifyBtn.textContent = "Verificar";
+      verifyBtn.classList.add("verify-btn");
+
+      verifyBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(`https://boardmakerback.onrender.com/boards/${board._id}/verificar`, {
+            method: "PATCH",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            alert("Board verificado!");
+            verifyBtn.remove();
+          } else alert("Erro ao verificar board");
+        } catch (err) {
+          console.error(err);
+          alert("Erro ao verificar board");
+        }
+      });
+
+      card.appendChild(verifyBtn);
+    }
+
+    // monta o card
+    card.appendChild(img);
+    card.appendChild(nome);
+    card.appendChild(btn);
+
+    searchBoardResultsContainer.appendChild(card);
+  });
+
+  // evento para adicionar board
+  document.querySelectorAll(".addBoardBtn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const boardId = btn.dataset.id;
+      try {
+        const res = await fetch(`https://boardmakerback.onrender.com/boards/copiar/${boardId}`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      if (res.ok) {
+  alert("Board adicionado à sua biblioteca!");
+  await carregarBoards(); // ✅ atualiza a lista sem recarregar
+  btn.disabled = true;
+  btn.textContent = "Adicionado";
+} else {
+  alert("Erro ao adicionar board");
+}
+      } catch (err) {
+        console.error(err);
+        alert("Erro de conexão");
+      }
+    });
+  });
+}
+
+// ========================
+// Busca principal (quando clica em pesquisar)
+// ========================
 const searchBoards = async () => {
   const query = searchBoardInput.value.trim();
   if (!query) {
@@ -2621,269 +2777,269 @@ const searchBoards = async () => {
     }
 
     const boards = await res.json();
-    searchBoardResultsContainer.innerHTML = "";
-
-    if (boards.length === 0) {
-      searchBoardResultsContainer.innerHTML = "<p>Nenhum board encontrado.</p>";
-      return;
-    }
-
-    const usuariosVerificadores = ["68f2ac44a5bc316f26869a43"];
-    const userId = localStorage.getItem("userId");
-
-
-
-
-    boards.forEach(board => {
-      const card = document.createElement("div");
-      card.classList.add("card");
-
-      // imagem
-      const img = document.createElement("img");
-      img.src = board.imagem?.startsWith('http')
-  ? board.imagem
-  : `https://boardmakerback.onrender.com${board.imagem}`;
-      img.alt = board.nome;
-      img.style.width = "100%";
-      img.style.height = "150px";
-      img.style.objectFit = "contain";
-
-      // nome do board
-      const nome = document.createElement("span");
-      nome.textContent = board.nome;
-      nome.classList.add("board-nome");
-
-      // botão adicionar à minha biblioteca
-      const btn = document.createElement("button");
-      btn.textContent = "Adicionar à minha biblioteca";
-      btn.dataset.id = board._id;
-      btn.classList.add("addBoardBtn");
-
-           // Botão "Verificar" (só aparece para usuário autorizado e board não verificado)
-      if (!board.verified && usuariosVerificadores.includes(userId)) {
-        const verifyBtn = document.createElement("button");
-        verifyBtn.textContent = "Verificar";
-        verifyBtn.classList.add("verify-btn");
-
-        verifyBtn.addEventListener("click", async () => {
-          try {
-            const res = await fetch(`https://boardmakerback.onrender.com/boards/${board._id}/verificar`, {
-              method: "PATCH",
-              headers: { "Authorization": `Bearer ${token}` }
-            });
-
-            if (res.ok) {
-              board.verified = true;
-              verifyBtn.remove();
-              alert("Board verificado!");
-            } else {
-              alert("Erro ao verificar board");
-            }
-          } catch (err) {
-            console.error(err);
-            alert("Erro ao verificar board");
-          }
-        });
-
-        card.appendChild(verifyBtn);
-      }
-
-
-      // adiciona elementos ao card
-      card.appendChild(img);
-      card.appendChild(nome);
-      card.appendChild(btn);
-
-      searchBoardResultsContainer.appendChild(card);
-    });
-
-    // evento do botão "Adicionar"
-    document.querySelectorAll(".addBoardBtn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const boardId = btn.dataset.id;
-        try {
-          const res = await fetch(`https://boardmakerback.onrender.com/boards/copiar/${boardId}`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (res.ok) alert("Board adicionado à sua biblioteca!");
-          else alert("Erro ao adicionar board");
-        } catch (err) {
-          console.error(err);
-          alert("Erro de conexão");
-        }
-      });
-    });
+    boards.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    renderBoards(boards);
 
   } catch (err) {
     console.error(err);
     alert("Erro na pesquisa");
   }
-
-  
 };
-    cancelSearchBoardBtn.addEventListener("click", () => {
-      modalSearchBoard.style.display = "none";
-    });
 
-// Associar busca ao botão dentro do modal
-const triggerSearchBoard = document.getElementById("triggerSearchBoard");
-if (triggerSearchBoard) triggerSearchBoard.addEventListener("click", searchBoards);
-    searchPedalBtn.addEventListener("click", () => {
-  modalSearchPedal.style.display = "flex";
-  searchInput.value = "";
-  searchResultsContainer.innerHTML = "";
-});
-
-// Fechar modal
-cancelSearchBtn.addEventListener("click", () => {
-  modalSearchPedal.style.display = "none";
-});
-
-// Buscar pedais de todos usuários
-searchBtn.addEventListener("click", async () => {
-  const query = searchInput.value.trim();
-  if (!query) {
-    alert("Digite algo para pesquisar!");
-    return;
-  }
+// ========================
+// Buscar automaticamente ao abrir o modal
+// ========================
+searchBoardBtn.addEventListener("click", async () => {
+  modalSearchBoard.style.display = "flex";
+  searchBoardInput.value = "";
+  searchBoardResultsContainer.innerHTML = "<p>Carregando boards...</p>";
 
   try {
-    const res = await fetch(`https://boardmakerback.onrender.com/pedais/todos?search=${query}`, {
+    const res = await fetch("https://boardmakerback.onrender.com/boards/todos", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     if (!res.ok) {
-      alert("Erro ao buscar pedais");
+      searchBoardResultsContainer.innerHTML = "<p>Erro ao carregar boards.</p>";
       return;
     }
 
-    const pedais = await res.json();
-    searchResultsContainer.innerHTML = "";
+    const boards = await res.json();
+    boards.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    renderBoards(boards);
 
-    if (pedais.length === 0) {
-      searchResultsContainer.innerHTML = "<p>Nenhum pedal encontrado.</p>";
-      return;
-    }
-
-    const usuariosVerificadores = ["68f2ac44a5bc316f26869a43"];
-    const userId = localStorage.getItem("userId");
-
-pedais.forEach(pedal => {
-  const card = document.createElement("div");
-  card.classList.add("card"); 
-
-  // imagem
-  const img = document.createElement("img");
-  img.src = pedal.imagem.startsWith("http")
-  ? pedal.imagem
-  : `https://boardmakerback.onrender.com${pedal.imagem}`;
-  img.alt = pedal.nome;
-  img.style.width = "100%";
-  img.style.height = "150px";
-  img.style.objectFit = "contain"; // garante que não corte
-
-  // nome do pedal
-  const nome = document.createElement("span");
-  nome.textContent = pedal.nome;
-  nome.classList.add("pedal-nome");
-
-  // nome do criador
-  const criador = document.createElement("span");
-  criador.textContent = pedal.usuarioId?.nome || "Desconhecido"
-  criador.classList.add("pedal-criador");
-
-  // botão adicionar
-  const btn = document.createElement("button");
-  btn.textContent = "Adicionar à minha biblioteca";
-  btn.dataset.id = pedal._id;
-  btn.classList.add("addPedalBtn");
-
-   // Botão "Verificar" (somente para usuário autorizado e pedal não verificado)
-      if (!pedal.verified && usuariosVerificadores.includes(userId)) {
-        const verifyBtn = document.createElement("button");
-        verifyBtn.textContent = "Verificar";
-        verifyBtn.classList.add("verify-btn");
-
-        verifyBtn.addEventListener("click", async () => {
-          try {
-            const res = await fetch(`https://boardmakerback.onrender.com/pedais/${pedal._id}/verificar`, {
-              method: "PATCH",
-              headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (res.ok) {
-              alert("Pedal verificado!");
-              pedal.verified = true;
-              verifyBtn.remove();
-            } else {
-              alert("Erro ao verificar pedal");
-            }
-          } catch (err) {
-            console.error(err);
-            alert("Erro ao verificar pedal");
-          }
-        });
-
-        card.appendChild(verifyBtn);
-      }
-
-
-  // adiciona elementos ao card
-  card.appendChild(img);
-  card.appendChild(nome);
-  card.appendChild(criador);
-  card.appendChild(btn);
-
-  searchResultsContainer.appendChild(card);
+  } catch (err) {
+    console.error(err);
+    searchBoardResultsContainer.innerHTML = "<p>Erro ao carregar boards.</p>";
+  }
 });
 
-// evento do botão "Adicionar"
-document.querySelectorAll(".addPedalBtn").forEach(btn => {
-  btn.addEventListener("click", async () => {
-    const pedalId = btn.dataset.id;
+searchBoardInput.addEventListener("input", async () => {
+  const query = searchBoardInput.value.trim();
+
+  // Se o campo estiver vazio → recarrega todos os boards
+  if (query === "") {
+    searchBoardResultsContainer.innerHTML = "<p>Carregando boards...</p>";
+    try {
+      const res = await fetch("https://boardmakerback.onrender.com/boards/todos", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        searchBoardResultsContainer.innerHTML = "<p>Erro ao carregar boards.</p>";
+        return;
+      }
+
+      const boards = await res.json();
+      // Ordena alfabeticamente
+      boards.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      renderBoards(boards);
+
+    } catch (err) {
+      console.error(err);
+      searchBoardResultsContainer.innerHTML = "<p>Erro ao carregar boards.</p>";
+    }
+  }
+});
+// ========================
+// Fechar modal
+// ========================
+cancelSearchBoardBtn.addEventListener("click", () => {
+  modalSearchBoard.style.display = "none";
+});
+
+// ========================
+// Botão dentro do modal para pesquisar
+// ========================
+const triggerSearchBoard = document.getElementById("triggerSearchBoard");
+if (triggerSearchBoard) triggerSearchBoard.addEventListener("click", searchBoards);
+
+// ---------- Buscar / mostrar pedais (reutilizável) ----------
+
+
+async function fetchPedais(search = "") {
+  const url = search
+    ? `https://boardmakerback.onrender.com/pedais/todos?search=${encodeURIComponent(search)}`
+    : `https://boardmakerback.onrender.com/pedais/todos`;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error("Erro ao buscar pedais");
+  return await res.json();
+}
+
+function renderPedaisList(pedais) {
+  searchResultsContainer.innerHTML = "";
+
+  if (!Array.isArray(pedais) || pedais.length === 0) {
+    searchResultsContainer.innerHTML = "<p>Nenhum pedal encontrado.</p>";
+    return;
+  }
+
+  // Ordena alfabeticamente por nome
+  pedais.sort((a, b) => (a.nome || "").localeCompare(b.nome || "", "pt-BR"));
+
+  pedais.forEach(pedal => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    const img = document.createElement("img");
+    img.src = (pedal.imagem || "").startsWith("http")
+      ? pedal.imagem
+      : `https://boardmakerback.onrender.com${pedal.imagem || ""}`;
+    img.alt = pedal.nome || "Sem nome";
+    img.style.width = "100%";
+    img.style.height = "150px";
+    img.style.objectFit = "contain";
+
+    const nome = document.createElement("span");
+    nome.textContent = pedal.nome || "Sem nome";
+    nome.classList.add("pedal-nome");
+
+    const criador = document.createElement("span");
+    criador.textContent = pedal.usuarioId?.nome || "Desconhecido";
+    criador.classList.add("pedal-criador");
+
+    const btn = document.createElement("button");
+    btn.textContent = "Adicionar à minha biblioteca";
+    btn.dataset.id = pedal._id;
+    btn.classList.add("addPedalBtn");
+
+    // Botão verificar (só visual aqui; ação tratada por delegação)
+    let verifyBtn = null;
+    if (!pedal.verified && usuariosVerificadores.includes(userId)) {
+      verifyBtn = document.createElement("button");
+      verifyBtn.textContent = "Verificar";
+      verifyBtn.classList.add("verify-btn");
+      verifyBtn.dataset.id = pedal._id;
+    }
+
+    card.appendChild(img);
+    card.appendChild(nome);
+    card.appendChild(criador);
+    if (verifyBtn) card.appendChild(verifyBtn);
+    card.appendChild(btn);
+
+    searchResultsContainer.appendChild(card);
+  });
+}
+
+// ---------- Abrir modal: carrega todos os pedais ordenados ----------
+if (typeof searchPedalBtn !== "undefined" && searchPedalBtn) {
+  searchPedalBtn.addEventListener("click", async () => {
+    modalSearchPedal.style.display = "flex";
+    searchInput.value = "";
+    searchResultsContainer.innerHTML = "<p>Carregando...</p>";
+
+    try {
+      const pedais = await fetchPedais(); // sem query => traz todos
+      renderPedaisList(pedais);
+    } catch (err) {
+      console.error(err);
+      searchResultsContainer.innerHTML = "<p>Erro ao carregar pedais.</p>";
+    }
+  });
+}
+
+// ---------- Botão de busca (pesquisa pelo texto) ----------
+if (typeof searchBtn !== "undefined" && searchBtn) {
+  searchBtn.addEventListener("click", async () => {
+    const query = searchInput.value.trim();
+    if (!query) {
+      alert("Digite algo para pesquisar!");
+      return;
+    }
+
+    searchResultsContainer.innerHTML = "<p>Buscando...</p>";
+    try {
+      const pedais = await fetchPedais(query);
+      renderPedaisList(pedais);
+    } catch (err) {
+      console.error(err);
+      searchResultsContainer.innerHTML = "<p>Erro ao buscar pedais.</p>";
+    }
+  });
+}
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+  if (query === "") {
+    const pedais = await fetchPedais();
+    renderPedaisList(pedais);
+  }
+});
+
+// ---------- Delegação de eventos para os botões dentro do container ----------
+searchResultsContainer.addEventListener("click", async (e) => {
+  const addBtn = e.target.closest(".addPedalBtn");
+  if (addBtn) {
+    const pedalId = addBtn.dataset.id;
     try {
       const res = await fetch(`https://boardmakerback.onrender.com/pedais/copiar/${pedalId}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) alert("Pedal adicionado à sua biblioteca!");
-      else alert("Erro ao adicionar pedal");
+if (res.ok) {
+  alert("Pedal adicionado à sua biblioteca!");
+  await carregarPedais(); // ✅ atualiza a lista sem recarregar
+  addBtn.disabled = true;
+  addBtn.textContent = "Adicionado";
+} else {
+  alert("Erro ao adicionar pedal");
+}
     } catch (err) {
       console.error(err);
       alert("Erro de conexão");
     }
-  });
-});
-
-    // evento para cada botão "Adicionar"
-
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro na pesquisa");
+    return;
   }
-});
+  
 
+  const verifyBtn = e.target.closest(".verify-btn");
+  if (verifyBtn) {
+    const pedalId = verifyBtn.dataset.id;
+    try {
+      const res = await fetch(`https://boardmakerback.onrender.com/pedais/${pedalId}/verificar`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        alert("Pedal verificado!");
+        // remove botão verificar
+        verifyBtn.remove();
+      } else {
+        alert("Erro ao verificar pedal");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao verificar pedal");
+    }
+    return;
+  }
+  
+});
+if (typeof cancelSearchBtn !== "undefined" && cancelSearchBtn) {
+  cancelSearchBtn.addEventListener("click", () => {
+    modalSearchPedal.style.display = "none";
+  });
+}
  // Salvar novo pedal/board
+// Salvar novo pedal/board
 saveModalBtn.addEventListener("click", async () => {
     const spinner = document.createElement("span");
     spinner.className = "spinner";
     spinner.style.marginLeft = "8px";
     saveModalBtn.appendChild(spinner);
-
-    // Desabilita botão para evitar múltiplos cliques
     saveModalBtn.disabled = true;
-
-    console.log("BoardMeta definido:", boardMeta);
 
     const nome = inputNome.value.trim();
     const categoria = inputCategoria.value.trim();
     const file = inputUpload.files[0];
     const imagemUrl = inputImagem.value.trim();
-    const widthCm = parseFloat(document.getElementById("inputWidthCm").value) || 0;
-    const heightCm = parseFloat(document.getElementById("inputHeightCm").value) || 0;
 
+    const widthVal = inputWidthCm.value;
+    const heightVal = inputHeightCm.value;
+    const widthCm = widthVal === "" ? NaN : parseFloat(widthVal);
+    const heightCm = heightVal === "" ? NaN : parseFloat(heightVal);
+
+    // === Validação básica ===
     if (!nome || (!file && !imagemUrl)) {
         alert("Nome e imagem são obrigatórios!");
         saveModalBtn.disabled = false;
@@ -2891,10 +3047,17 @@ saveModalBtn.addEventListener("click", async () => {
         return;
     }
 
-    const url =
-        creatingType === "pedal"
-            ? "https://boardmakerback.onrender.com/pedais"
-            : "https://boardmakerback.onrender.com/boards";
+    // === Validação obrigatória para AMBOS (boards e pedais) ===
+    if (isNaN(widthCm) || isNaN(heightCm) || widthCm <= 0 || heightCm <= 0) {
+        alert("Largura e comprimento são obrigatórios!");
+        saveModalBtn.disabled = false;
+        spinner.remove();
+        return;
+    }
+
+    const url = creatingType === "pedal"
+        ? "https://boardmakerback.onrender.com/pedais"
+        : "https://boardmakerback.onrender.com/boards";
 
     const formData = new FormData();
     formData.append("nome", nome);
@@ -2928,30 +3091,18 @@ saveModalBtn.addEventListener("click", async () => {
 
         const resData = await res.json();
 
-        if (res.ok) {
-            alert(`${creatingType} criado com sucesso!`);
+if (res.ok) {
+  alert(`${creatingType} criado com sucesso!`);
 
-            if (creatingType === "pedal") {
-                const pedalSelect = document.getElementById("pedalSelect");
-                const option = document.createElement("option");
-                option.value = file ? URL.createObjectURL(file) : imagemUrl;
-                option.textContent = nome;
-                option.dataset.id = resData._id || resData.pedal?._id;
-                option.dataset.width = resData.pedal?.widthCm || widthCm;
-                option.dataset.height = resData.pedal?.heightCm || heightCm;
-                pedalSelect.appendChild(option);
-            } else {
-                const boardSelect = document.getElementById("boardSelect");
-                const option = document.createElement("option");
-                option.value = file ? URL.createObjectURL(file) : imagemUrl;
-                option.textContent = nome;
-                option.dataset.id = resData._id;
-                option.dataset.width = resData.widthCm || widthCm;
-                option.dataset.height = resData.heightCm || heightCm;
-                boardSelect.appendChild(option);
-            }
+  // Atualiza instantaneamente a lista
+  if (creatingType === "pedal") {
+    await carregarPedais();
+  } else {
+    await carregarBoards(); // se tiver função similar
+  }
 
-            closeModal();
+  closeModal();
+
         } else {
             alert("Erro ao criar: " + (resData.error || "Desconhecido"));
         }
@@ -2959,7 +3110,6 @@ saveModalBtn.addEventListener("click", async () => {
         console.error("Erro ao criar:", err);
         alert("Erro de conexão ao criar o item.");
     } finally {
-        // Reabilita botão e remove spinner
         saveModalBtn.disabled = false;
         spinner.remove();
     }
@@ -3058,20 +3208,19 @@ async function carregarBoards() {
     const boards = await res.json();
 
     boardSelect.innerHTML = '<option value="">-- Escolha um board --</option>';
-
-    boards.forEach(board => {
-      const option = document.createElement('option');
-      const imagemNormalizada = getImageUrl(board.imagem);
-      option.value = JSON.stringify({
-        id: board._id,
-        nome: board.nome,
-        imagem: imagemNormalizada,
-        widthCm: board.widthCm || 30,
-        heightCm: board.heightCm || 15
-      });
-      option.textContent = board.nome;
-      boardSelect.appendChild(option);
-    });
+boards.reverse().forEach(board => {
+  const option = document.createElement('option');
+  const imagemNormalizada = getImageUrl(board.imagem);
+  option.value = JSON.stringify({
+    id: board._id,
+    nome: board.nome,
+    imagem: imagemNormalizada,
+    widthCm: board.widthCm || 30,
+    heightCm: board.heightCm || 15
+  });
+  option.textContent = board.nome;
+  boardSelect.appendChild(option);
+});
 
     if (boardSelect.choicesInstance) boardSelect.choicesInstance.destroy();
 
@@ -3241,63 +3390,69 @@ specModal.onclick = (e) => {
 };
 
   //Carregar pedalboard existente
+// ===== Carregar pedalboard existente =====
 if (boardId) {
-        (async () => {
-            try {
-                const res = await fetch(`https://boardmakerback.onrender.com/pedalboards/${boardId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                const data = await res.json();
-                if (!res.ok || !data) throw new Error("Erro ao carregar pedalboard");
+  (async () => {
+    try {
+      const res = await fetch(`https://boardmakerback.onrender.com/pedalboards/${boardId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok || !data) throw new Error("Erro ao carregar pedalboard");
 
-                boardMeta = { nome: data.nome, artista: data.artista, descricao: data.descricao };
-                if (data.estilo) boardMeta.estilo = [...data.estilo];
+      boardMeta = { nome: data.nome, artista: data.artista, descricao: data.descricao };
+      if (data.estilo) boardMeta.estilo = [...data.estilo];
 
-                inputBoardNome.value = data.nome;
-                inputBoardArtista.value = data.artista;
-                inputBoardDescricao.value = data.descricao;
-                if (data.estilo && Array.isArray(data.estilo)) {
-  estilosSelecionados = [...data.estilo]; 
+      inputBoardNome.value = data.nome;
+      inputBoardArtista.value = data.artista;
+      inputBoardDescricao.value = data.descricao;
 
-  estilosSelecionadosContainer.innerHTML = ""; 
+      if (data.estilo && Array.isArray(data.estilo)) {
+        estilosSelecionados = [...data.estilo];
+        estilosSelecionadosContainer.innerHTML = "";
 
-  data.estilo.forEach(estilo => {
-    const tag = document.createElement('div');
-    tag.className = "estilo-tag";
-    tag.innerHTML = `${estilo} <span>✕</span>`;
+        data.estilo.forEach(estilo => {
+          const tag = document.createElement('div');
+          tag.className = "estilo-tag";
+          tag.innerHTML = `${estilo} <span>✕</span>`;
 
-    tag.querySelector('span').addEventListener('click', (e) => {
-      e.stopPropagation();
-      estilosSelecionados = estilosSelecionados.filter(e2 => e2 !== estilo);
-      tag.remove();
-    });
+          tag.querySelector('span').addEventListener('click', (e) => {
+            e.stopPropagation();
+            estilosSelecionados = estilosSelecionados.filter(e2 => e2 !== estilo);
+            tag.remove();
+          });
 
-    estilosSelecionadosContainer.appendChild(tag);
-  });
-}
+          estilosSelecionadosContainer.appendChild(tag);
+        });
+      }
 
-                modalInicial.style.display = "flex";
-                modalInicial.querySelector("h2").innerText = "Informações do Board";
-                cancelInicialBtn.style.display = "none";
-                if (data.fundo) {
-  boardArea.style.backgroundImage = `url(${data.fundo})`;
-  currentFundo = data.fundo;
-}
+      // 🔹 só abre o modal inicial se ainda não estiver configurado
+      const jaConfigurado = localStorage.getItem("boardConfigured");
+      if (!jaConfigurado) {
+        modalInicial.style.display = "flex";
+        modalInicial.querySelector("h2").innerText = "Informações do Board";
+        cancelInicialBtn.style.display = "none";
+      }
 
-                data.pedais.forEach(p => carregarItemExistente(p, 'pedal'));
-                data.boards.forEach(b => carregarItemExistente(b, 'board'));
+      if (data.fundo) {
+        boardArea.style.backgroundImage = `url(${data.fundo})`;
+        currentFundo = data.fundo;
+      }
 
-                if (data.annotations && Array.isArray(data.annotations)) {
-  objects = data.annotations;
-  redraw();
-}
+      data.pedais.forEach(p => carregarItemExistente(p, 'pedal'));
+      data.boards.forEach(b => carregarItemExistente(b, 'board'));
 
-            } catch (err) {
-                console.error(err);
-                alert("Não foi possível carregar o pedalboard para edição.");
-            }
-        })();
+      if (data.annotations && Array.isArray(data.annotations)) {
+        objects = data.annotations;
+        redraw();
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Não foi possível carregar o pedalboard para edição.");
     }
+  })();
+}
 
 // ✅ Função auxiliar universal para tratar imagens (local ou Cloudinary)
 function getImageUrl(path) {

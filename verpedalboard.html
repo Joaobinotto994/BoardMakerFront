@@ -455,9 +455,38 @@
   font-size: 0.85rem;
   color: #ccc;
   text-align: left;
-  white-space: pre-wrap; /* respeita quebras de linha do texto */
+  white-space: pre-wrap;
+  max-height: 180px; /* 🔹 limita altura máxima do texto */
+  overflow-y: auto;  /* 🔹 ativa scroll vertical apenas dentro do texto */
+  scrollbar-width: thin; /* 🔹 scrollbar discreto no Firefox */
+  scrollbar-color: #666 #1e1e1e; /* 🔹 cor do scroll */
 }
 
+/* Scrollbar estilizado (para Chrome/Edge/Safari) */
+#previewSpec::-webkit-scrollbar {
+  width: 8px;
+}
+
+#previewSpec::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 6px;
+}
+
+#previewSpec::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+/* 🔹 Destaque azul quando um pedal é clicado */
+.placed-pedal.selected {
+  outline: 3px solid #007bff; /* cor da borda */
+  outline-offset: 6px; /* 🔹 distância maior da borda pro pedal */
+  border-radius: 4px;
+  box-shadow: 0 0 0 6px rgba(0, 123, 255, 0.4);/* 🔹 brilho mais largo */
+  transform: scale(1.08); /* leve aumento */
+  transition: 
+    transform 0.25s ease-in-out,
+    box-shadow 0.25s ease-in-out,
+    outline 0.25s ease-in-out;
+}
 
  </style>
 </head>
@@ -578,61 +607,57 @@ function criarItemVisual(item, type) {
 
   // === Evento de clique para mostrar o preview do pedal ===
 
-el.addEventListener("click", async () => {
+el.addEventListener("click", async (e) => {
   if (type !== "pedal") return;
 
+  e.stopPropagation(); // evita propagação
+
+  // 🔹 Remove seleção anterior
+  document.querySelectorAll('.placed-pedal').forEach(p => p.classList.remove('selected'));
+
+  // 🔹 Marca este pedal como selecionado
+  el.classList.add('selected');
+
+  // === Mantém seu preview funcionando normalmente ===
   const preview = document.getElementById("pedalPreview");
   const img = document.getElementById("previewImg");
   const nome = document.getElementById("previewNome");
   const categoria = document.getElementById("previewCategoria");
   const spec = document.getElementById("previewSpec");
 
-try {
-  const response = await fetch(`${BASE_URL}/pedais/${item.pedalId}`, {
-    headers: {
-      "Authorization": `Bearer ${localStorage.getItem("token")}`
+  try {
+    const response = await fetch(`${BASE_URL}/pedais/${item.pedalId}`, {
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+    });
+
+    if (!response.ok) throw new Error("Erro ao buscar pedal no servidor.");
+
+    const pedal = await response.json();
+
+    let imageUrl = `${BASE_URL}/uploads/imagem-placeholder.png`;
+    if (pedal.imagem) {
+      if (pedal.imagem.startsWith('http')) imageUrl = pedal.imagem;
+      else if (pedal.imagem.startsWith('/')) imageUrl = `${BASE_URL}${pedal.imagem}`;
+      else imageUrl = `${BASE_URL}/${pedal.imagem}`;
     }
-  });
 
-  if (!response.ok) throw new Error("Erro ao buscar pedal no servidor.");
+    img.src = imageUrl;
+    nome.textContent = pedal.nome || "Pedal sem nome";
+    categoria.textContent = pedal.categoria || "Categoria desconhecida";
+    spec.textContent = item.spec || "Nenhuma configuração adicionada.";
 
-  const pedal = await response.json();
-  console.log("Imagem recebida do backend:", pedal.imagem);
-
-  // 🔧 Corrige o caminho da imagem
-  let imageUrl = `${BASE_URL}/uploads/imagem-placeholder.png`;
-  if (pedal.imagem) {
-    if (pedal.imagem.startsWith('http')) {
-      imageUrl = pedal.imagem;
-    } else if (pedal.imagem.startsWith('/')) {
-      imageUrl = `${BASE_URL}${pedal.imagem}`;
-    } else {
-      imageUrl = `${BASE_URL}/${pedal.imagem}`;
-    }
+    preview.style.display = "block";
+    preview.style.opacity = 0;
+    preview.style.transition = "opacity 0.3s";
+    requestAnimationFrame(() => (preview.style.opacity = 1));
+  } catch (err) {
+    console.error("Erro ao carregar preview do pedal:", err);
+    img.src = el.src;
+    nome.textContent = item.nome || "Pedal sem nome";
+    categoria.textContent = item.categoria || "Categoria desconhecida";
+    spec.textContent = item.spec || "Nenhuma configuração adicionada.";
+    preview.style.display = "block";
   }
-
-  img.src = imageUrl;
-  console.log("URL final da imagem:", imageUrl);
-
-  nome.textContent = pedal.nome || "Pedal sem nome";
-  categoria.textContent = pedal.categoria || "Categoria desconhecida";
-  spec.textContent = item.spec || "Nenhuma configuração adicionada.";
-
-  preview.style.display = "block";
-  preview.style.opacity = 0;
-  preview.style.transition = "opacity 0.3s";
-  requestAnimationFrame(() => {
-    preview.style.opacity = 1;
-  });
-
-} catch (err) {
-  console.error("Erro ao carregar preview do pedal:", err);
-  img.src = el.src;
-  nome.textContent = item.nome || "Pedal sem nome";
-  categoria.textContent = item.categoria || "Categoria desconhecida";
-  spec.textContent = item.spec || "Nenhuma configuração adicionada.";
-  preview.style.display = "block";
-}
 });
 }
 
