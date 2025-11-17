@@ -18,10 +18,10 @@
 #sidebar {
     width: 240px;
     background: linear-gradient(180deg, #1c1c1c, #111);
-    padding: 15px 18px; /* menos padding geral */
+    padding: 15px 18px;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* diminui o espaço entre elementos */
+    gap: 10px; 
     border-right: 2px solid #222;
 }
 
@@ -89,24 +89,22 @@
         }
 
 #board-area {
-    width: 1260px;       /* largura fixa em px */
-    height: 700px;       /* altura fixa em px */
+    width: 1260px;    
+    height: 700px;    
     background: #1c1c1c;
     border: 3px dashed #333;
     border-radius: 15px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(0,0,0,0.7);
-    /* 🔹 fixo para não alterar com zoom do navegador */
     transform: scale(1);
     transform-origin: top left;
 }
         #board-area {
-  background-repeat: no-repeat;      /* impede repetição */
-  background-size: 100% 100%;            /* ajusta a imagem para cobrir toda a área */
-  background-position: center center; /* centraliza a imagem */
+  background-repeat: no-repeat;     
+  background-size: 100% 100%;      
+  background-position: center center; 
 }
-
         #controls {
             position: absolute;
             top: 15px;
@@ -134,17 +132,14 @@
 
 
 .placed-pedal, .placed-board {
-    width: auto;   /* JS define em px */
-    height: auto;  /* JS define em px */
+    width: auto;   
+    height: auto;  
     position: absolute;
     cursor: grab;
     user-select: none;
     z-index: 1;
     transform-origin: center center;
 }
-
-
-
         .placed-pedal.dragging, .placed-board.dragging {
             cursor: grabbing;
             opacity: 0.8;
@@ -157,7 +152,7 @@
         }
 
  .pedal-wrapper, .board-wrapper {
-    position: absolute; /* absoluto dentro do container fixo */
+    position: absolute; 
     pointer-events: auto;
 }
 
@@ -322,7 +317,6 @@
 .trash-btn:hover {
   background: #b52b27;
 }
-/*  Modal Excluir Board  */
 #modalDeleteBoard.modal {
   display: none;
   position: fixed;
@@ -342,9 +336,6 @@
   display: flex;
 }
 
-
-
-/* ===== TÍTULO ===== */
 #modalDeleteBoard h2 {
   font-size: 2rem;
   margin: 0;
@@ -352,7 +343,6 @@
   text-align: center;
 }
 
-/* ===== GRID DE CARDS ===== */
 #modalDeleteBoard .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -361,7 +351,6 @@
   margin-top: 20px;
 }
 
-/* ===== CARDS ===== */
 #modalDeleteBoard .card {
   background: #2c2c2c;
   border-radius: 12px;
@@ -389,7 +378,6 @@
   color: #00ffcc;
 }
 
-/* botão de excluir */
 #modalDeleteBoard .card .trash-btn {
   padding: 10px 16px;
   border: none;
@@ -407,10 +395,6 @@
   transform: scale(1.05);
 }
 
-
-
-/* Modal de Board e Pedal */
-
 #modalDeletePedal .modal-content,
 #modalDeleteBoard .modal-content {
     display: flex;
@@ -423,7 +407,6 @@
     position: relative;
 }
 
-/* Container de cards com rolagem */
 .cards-container {
   display: flex;
   flex-wrap: wrap;
@@ -434,7 +417,6 @@
   overflow-y: auto;
 }
 
-/* Card individual */
 .cards-container .card-item {
   display: flex;
   flex-direction: column;
@@ -504,8 +486,6 @@
   display: flex;
 }
 
-
-/* ===== Modal Content Ajustado ===== */
 #modalSearchPedal .modal-content,
 #modalSearchBoard .modal-content {
     display: flex;
@@ -521,19 +501,16 @@
 }
 
 
-
-/* Corpo rolável do modal */
 #modalSearchPedal .modal-body,
 #modalSearchBoard .modal-body {
     padding: 0px 30px;
     overflow-y: auto;
-    flex: 1; /* ocupa todo espaço disponível */
+    flex: 1; 
     display: flex;
     flex-direction: column;
     gap: 25px;
 }
 
-/* Botão fechar fixo no rodapé */
 #modalSearchPedal .cancel-btn,
 #modalSearchBoard .cancel-btn {
     padding: 12px 26px;
@@ -549,8 +526,6 @@
     align-self: flex-end; 
 }
 
-
-/* ===== Título ===== */
 #modalSearchPedal h2,
 #modalSearchBoard h2 {
     font-size: 2rem;
@@ -559,7 +534,6 @@
     text-align: center;
 }
 
-/* ===== INPUT ===== */
 #modalSearchPedal input[type="text"] {
   width: 100%;
   padding: 14px 20px;
@@ -577,7 +551,6 @@
   background: #2c2c2c;
 }
 
-/* ===== BOTÃO PESQUISAR ===== */
 #modalSearchPedal #searchBtn {
   margin-top: 12px;
   padding: 14px 28px;
@@ -590,7 +563,6 @@
   font-size: 1.1rem;
 }
 
-/* ===== GRID DE CARDS ===== */
 #modalSearchPedal .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
@@ -599,7 +571,6 @@
   margin-top: 20px;
 }
 
-/* ===== CARDS DE PEDAIS ===== */
 #modalSearchPedal .card {
   background: #2c2c2c;
   border-radius: 12px;
@@ -632,7 +603,6 @@
   box-shadow: 0 12px 25px rgba(0, 255, 204, 0.3);
 }
 
-/* ===== BOTÃO FECHAR ===== */
 #modalSearchPedal .cancel-btn {
   margin-top: 25px;
   padding: 12px 26px;
@@ -670,7 +640,6 @@
   background: #2c2c2c;
 }
 
-/* botão ao lado do input */
 #modalSearchPedal .search-bar button {
   padding: 14px 20px;
   border: none;
@@ -686,7 +655,7 @@
 #modalSearchPedal .search-bar button:hover {
   filter: brightness(0.9);
 }
-/* ===== Modal de Busca de Boards ===== */
+
 #modalSearchBoard.modal {
   display: none;
   position: fixed;
@@ -705,9 +674,6 @@
   display: flex;
 }
 
-
-
-/* ===== Input de busca ===== */
 #modalSearchBoard input[type="text"] {
   width: 100%;
   padding: 14px 20px;
@@ -725,7 +691,6 @@
   background: #2c2c2c;
 }
 
-/* ===== Botão Pesquisar ===== */
 #modalSearchBoard #searchBoardBtn {
   margin-top: 12px;
   padding: 14px 28px;
@@ -738,7 +703,6 @@
   font-size: 1.1rem;
 }
 
-/* ===== Grid de Cards ===== */
 #modalSearchBoard .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -747,7 +711,6 @@
   margin-top: 20px;
 }
 
-/* ===== Cards de Boards ===== */
 #modalSearchBoard .card {
   background: #2c2c2c;
   border-radius: 12px;
@@ -780,8 +743,6 @@
   box-shadow: 0 12px 25px rgba(0, 255, 204, 0.3);
 }
 
-
-/* Contêiner flex para input + botão */
 #modalSearchBoard .search-bar {
   display: flex;
   width: 100%;
@@ -821,7 +782,6 @@
 #modalSearchBoard .search-bar button:hover {
   filter: brightness(0.9);
 }
-/* ===== Modal Excluir Pedal ===== */
 #modalDeletePedal.modal {
   display: none;
   position: fixed;
@@ -855,7 +815,6 @@
   overflow-y: auto;
 }
 
-/* ===== TÍTULO ===== */
 #modalDeletePedal h2 {
   font-size: 2rem;
   margin: 0;
@@ -863,7 +822,6 @@
   text-align: center;
 }
 
-/* ===== GRID DE CARDS ===== */
 #modalDeletePedal .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -872,7 +830,6 @@
   margin-top: 20px;
 }
 
-/* ===== CARDS DE PEDAIS ===== */
 #modalDeletePedal .card {
   background: #2c2c2c;
   border-radius: 12px;
@@ -900,7 +857,6 @@
   color: #00ffcc;
 }
 
-/* botão de excluir dentro do card */
 #modalDeletePedal .card .trash-btn {
   padding: 10px 16px;
   border: none;
@@ -918,7 +874,6 @@
   transform: scale(1.05);
 }
 
-/* ===== BOTÃO FECHAR ===== */
 #modalDeletePedal .cancel-btn,
 #modalDeleteBoard .cancel-btn {
     margin-top: auto; 
@@ -938,7 +893,7 @@
   position: relative; 
   z-index: 9999; 
 }
-/* Container principal do select */
+
 .choices {
   width: 100%;
   max-width: 280px;
@@ -946,7 +901,6 @@
   margin-bottom: 0 !important;
 }
 
-/* Área principal (fechada) */
 .choices__inner {
   background-color: #1f1f1f;
   border-radius: 6px;
@@ -973,13 +927,11 @@
   padding: 8px 10px !important;
 }
 
-/* Placeholder */
 .choices__placeholder {
   color: #aaa;
   opacity: 0.9;
 }
 
-/* Drop */
 .choices__list--dropdown {
   background-color: #2a2a2a;
   border: 1px solid #3a3a3a;
@@ -994,10 +946,9 @@
   scrollbar-width: auto;
   scrollbar-color: #666 #1f1f1f;
   z-index: 100;
-  padding-bottom: 8px; /* espaço extra para o último item não ser cortado */
+  padding-bottom: 8px; 
 }
 
-/* Scroll */
 .choices__list--dropdown::-webkit-scrollbar {
   width: 10px;
 }
@@ -1010,7 +961,6 @@
   background-color: #ff0000;
 }
 
-/* Itens da lista */
 .choices__item--choice {
   background-color: #2a2a2a !important;
   color: #ffffff !important;
@@ -1018,7 +968,6 @@
   font-size: 14px;
   transition: background 0.2s ease, color 0.2s ease;
 }
-
 
 .choices__item--choice:hover,
 .choices__item--choice.is-highlighted {
@@ -1063,10 +1012,8 @@
   background-color: #fff !important;  
 }
 
-/* Corrige corte do último item no dropdown */
-
 .choices__list--dropdown .choices__item--choice:last-child {
-  margin-bottom: 4px; /* assegura espaço visível após o último item */
+  margin-bottom: 4px; 
 }
 
 #pedalboardToolbar {
@@ -1118,7 +1065,6 @@
     overflow-y: auto;
 }
 
-/* Título do modal */
 #fundoModal h3 {
     font-size: 1.8rem;
     color: #00ffcc;
@@ -1134,7 +1080,6 @@
     width: 100%;
 }
 
-
 #fundoList .fundoOption {
     width: 100%;
     height: 120px;
@@ -1149,7 +1094,6 @@
     transform: scale(1.05);
     border-color: #00ffcc;
 }
-
 
 #uploadFundo {
     width: 100%;
@@ -1169,7 +1113,6 @@
     box-shadow: 0 0 12px #00ffcc;
     outline: none;
 }
-
 
 #closeFundoModal {
     margin-top: 10px;
@@ -1193,7 +1136,6 @@
   color: white;
 }
 
-/* ===== OVERLAY  ===== */
 #specModal {
   display: none;
   position: fixed;
@@ -1206,7 +1148,6 @@
   backdrop-filter: blur(4px);
 }
 
-/* ===== CONTEÚDO PRINCIPAL ===== */
 .modal-spec .modal-content {
   width: 85%;
   max-width: 700px;
@@ -1220,7 +1161,6 @@
   border: 1px solid #2a2a2a;
 }
 
-/* ===== TÍTULO ===== */
 .modal-spec .modal-content h3 {
   background: #000;
   color: #fff;
@@ -1228,11 +1168,10 @@
   padding: 14px;
   margin: 0;
   font-size: 1.3rem;
-  border-bottom: 2px solid #e53935; /* vermelho */
+  border-bottom: 2px solid #e53935;
   text-transform: uppercase;
 }
 
-/* ===== ÁREA PRINCIPAL ===== */
 .modal-body {
   padding: 20px;
   display: flex;
@@ -1241,7 +1180,6 @@
   background: #1a1a1a;
 }
 
-/* ===== TEXTAREA ===== */
 #specInput {
   width: 100%;
   height: 180px; 
@@ -1261,7 +1199,6 @@
   box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.25);
 }
 
-/* ===== BOTÕES ===== */
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -1271,7 +1208,6 @@
   border-top: 1px solid #222;
 }
 
-/* ===== BOTÃO SALVAR ===== */
 #saveSpecBtn {
   background: #e53935;
   color: #fff;
@@ -1282,7 +1218,6 @@
   transform: scale(1.03);
 }
 
-/* ===== BOTÃO CANCELAR ===== */
 #cancelSpecBtn {
   background: #333;
   color: #ccc;
@@ -1293,7 +1228,6 @@
   transform: scale(1.03);
 }
 
-/* ===== ANIMAÇÕES ===== */
 @keyframes scaleIn {
   from {
     transform: scale(0.9);
@@ -1309,8 +1243,6 @@
   display: flex; 
 }
 
-
-/* ===== Card pedal ===== */
 #pedalInfoCard {
   margin-top: 10px;
   background: #121212;
@@ -1439,7 +1371,7 @@
   white-space: pre-wrap;
   border: 1px solid #222;
 }
-/* ===== etsilo do card ===== */
+
 #boardInfoCard {
   margin-top: 10px;
   background: #121212;
@@ -1612,8 +1544,8 @@
     cursor: pointer;
 }
 .spinner {
-  border: 2px solid #f3f3f3; /* cor de fundo */
-  border-top: 2px solid #333; /* cor do spinner */
+  border: 2px solid #f3f3f3; 
+  border-top: 2px solid #333; 
   border-radius: 50%;
   width: 16px;
   height: 16px;
@@ -1739,7 +1671,7 @@
 
 
 
-<!-- Modal principal -->
+<!-- modal de criação -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <div class="modal-left">
@@ -1764,7 +1696,7 @@
     </div>
 </div>
 
-<!-- Modal inicial -->
+<!-- modal inicial/criação pedalboard -->
 <div id="modalInicial" class="modal">
     <div class="modal-content">
         <h2>Criação do Pedalboard</h2>
@@ -1813,7 +1745,7 @@
     </div>
 </div>
 
-<!-- Modal para editar informações -->
+<!-- editar as infos -->
 <div id="modalEditarInfo" class="modal">
     <div class="modal-content">
         <h2>Deseja alterar as informações do Pedalboard?</h2>
@@ -1828,7 +1760,7 @@
 </div>
 
 
-<!-- Modal Excluir Pedal -->
+<!-- modal excluir pedal -->
 <div id="modalDeletePedal" class="modal">
   <div class="modal-content">
     <h2>Excluir Pedais</h2>
@@ -1838,7 +1770,7 @@
 </div>
 
 
-<!-- Modal Excluir Board -->
+<!-- modal excluir board -->
 <div id="modalDeleteBoard" class="modal">
   <div class="modal-content">
     <h2>Excluir Boards</h2>
@@ -1846,25 +1778,22 @@
     <button id="cancelDeleteBoardBtn" class="cancel-btn">Cancelar</button>
   </div>
 </div>
-<!-- Modal de Pesquisa de Pedais -->
+<!-- modal de pesquisar pedais -->
 <div id="modalSearchPedal" class="modal">
   <div class="modal-content">
     <h2>Pesquisar Pedais</h2>
-
     <div class="modal-body">
       <div class="search-bar">
         <input id="searchInput" type="text" placeholder="Digite o nome do pedal...">
         <button id="searchBtn">🔍</button>
       </div>
-
       <div id="searchResultsContainer" class="cards-container"></div>
     </div>
-
     <button id="cancelSearchBtn" class="cancel-btn">Fechar</button>
   </div>
 </div>
 </div>
-<!--SPEC -->
+<!--specs -->
 <div id="specModal" class="modal-spec">
   <div class="spec-content">
     <h3>Configuração do Pedal</h3>
@@ -1875,7 +1804,7 @@
     </div>
   </div>
 </div>
-<!-- Modal de Pesquisa de Boards -->
+<!-- modal de pesquisa de boards -->
 <div id="modalSearchBoard" class="modal">
   <div class="modal-content">
     <h2>Pesquisar Boards</h2>
@@ -1905,7 +1834,7 @@
     <button id="closeFundoModal">Fechar</button>
   </div>
 </div>
-<!-- Modal de carregamento -->
+<!-- carregamento -->
 <div id="loadingPedalboardModal" class="modal" style="display:none; justify-content:center; align-items:center; background: rgba(0,0,0,0.5);">
   <div style="background:#070707; padding:20px; border-radius:10px; text-align:center;">
     <div class="spinner2" style="margin-bottom:10px;"></div>
@@ -1913,7 +1842,6 @@
   </div>
 </div>
 
-<!-- Modal de carregamento -->
 <div id="loadingModal" style="
   display: none;
   position: fixed;
@@ -2015,14 +1943,14 @@ selectEstilo.addEventListener('change', () => {
 
   estilosSelecionados.push(valor);
 
-  // cria a tag
+  // criar tag
 const tag = document.createElement('div');
 tag.className = "estilo-tag";
 tag.innerHTML = `${valor} <span>✕</span>`;
 
 // remove tag
 tag.querySelector('span').addEventListener('click', (e) => {
-    e.stopPropagation(); // evita clicar na div pai
+    e.stopPropagation(); 
     estilosSelecionados = estilosSelecionados.filter(e2 => e2 !== valor);
     tag.remove();
 });
@@ -2035,11 +1963,9 @@ estilosSelecionadosContainer.appendChild(tag);
 
     
 
-// ===== Modal Inicial =====
+// modal inicial 
 document.addEventListener("DOMContentLoaded", () => {
   const jaConfigurado = localStorage.getItem("boardConfigured");
-
-  // se ainda não foi configurado, mostra o modal inicial
   if (!jaConfigurado) {
     modalInicial.style.display = "flex";
   } else {
@@ -2048,16 +1974,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 infoBtn.addEventListener("click", () => {
-  // 🔹 Abre o modal
   modalInicial.style.display = "flex";
-
-  // 🔹 Preenche os campos com os dados atuais
   if (boardMeta) {
     inputBoardNome.value = boardMeta.nome || "";
     inputBoardArtista.value = boardMeta.artista || "";
     inputBoardDescricao.value = boardMeta.descricao || "";
-
-    // Atualiza estilos selecionados
     estilosSelecionadosContainer.innerHTML = "";
     if (boardMeta.estilo && Array.isArray(boardMeta.estilo)) {
       estilosSelecionados = [...boardMeta.estilo];
@@ -2078,7 +1999,6 @@ infoBtn.addEventListener("click", () => {
     }
   }
 
-  // 🔹 Ajusta título e visibilidade dos botões, se quiser
   modalInicial.querySelector("h2").innerText = "Editar informações do Board";
   cancelInicialBtn.style.display = "inline-block";
 });
@@ -2107,8 +2027,6 @@ continuarInicialBtn.addEventListener("click", () => {
     estilo: estilosSelecionados,
     fundo: currentFundo
   };
-
-  // marca que o board foi configurado
   localStorage.setItem("boardConfigured", "true");
 
   modalInicial.style.display = "none";
@@ -2119,7 +2037,6 @@ shareBtn.addEventListener("click", async () => {
   const boardArea = document.getElementById("board-area");
   const controls = document.getElementById("controls");
 
-  // Esconde botões
   controls.style.display = "none";
 
   try {
@@ -2129,8 +2046,6 @@ shareBtn.addEventListener("click", async () => {
       allowTaint: true,
       scale: 2 
     });
-
-    // Mostra os botões novamente
     controls.style.display = "flex";
 
     // download
@@ -2146,13 +2061,12 @@ shareBtn.addEventListener("click", async () => {
   }
 });
 
-// Modais de criação
+// modais de criação
 function openModal(type) {
   console.log("Abrindo modal:", type);
   creatingType = type;
   modal.style.display = "flex";
 
-  // limpa campos
   inputNome.value = "";
   inputCategoria.value = "";
   inputWidthCm.value = "";
@@ -2161,10 +2075,8 @@ function openModal(type) {
   inputUpload.value = "";
   modalPreview.src = "";
 
-  // mostra categoria só se for pedal
   inputCategoria.style.display = type === "pedal" ? "block" : "none";
 
-  // largura e altura sempre obrigatórias
   inputWidthCm.setAttribute("required", "required");
   inputHeightCm.setAttribute("required", "required");
   inputWidthCm.placeholder = "Largura (cm)";
@@ -2172,14 +2084,14 @@ function openModal(type) {
 }
 
 
-//Tools
+//tools, obs esse campo é para alterações futuras ainda não esta 100%
 document.getElementById('pen-btn').onclick = () => currentTool = 'pen';
 document.getElementById('line-btn').onclick = () => currentTool = 'line';
 document.getElementById('arrow-btn').onclick = () => currentTool = 'arrow';
 document.getElementById('text-btn').onclick = () => currentTool = 'text';
 document.getElementById('undo-btn').onclick = undoLast;
 
-      // Canvas para desenhar
+      // canvas para desenhar
  const boardContainer = document.getElementById('board-area'); 
 const canvas = document.createElement('canvas');
 canvas.id = 'draw-canvas';
@@ -2196,7 +2108,6 @@ const ctx = canvas.getContext('2d');
 canvas.width = boardContainer.clientWidth;
 canvas.height = boardContainer.clientHeight;
 
-// Variáveis
 let drawing = false;
 let currentTool = 'pen';
 let startX = 0, startY = 0;
@@ -2205,18 +2116,14 @@ let size = parseInt(document.getElementById('sizePicker').value);
 let objects = []; 
 let selectedObj = null;
 
-//Atualizar cor e tamanho
 document.getElementById('colorPicker').addEventListener('input', e => color = e.target.value);
 document.getElementById('sizePicker').addEventListener('input', e => size = parseInt(e.target.value));
-
-//Seleção de ferramentas
 document.getElementById('pen-btn').onclick = () => currentTool = 'pen';
 document.getElementById('line-btn').onclick = () => currentTool = 'line';
 document.getElementById('arrow-btn').onclick = () => currentTool = 'arrow';
 document.getElementById('text-btn').onclick = () => currentTool = 'text';
 document.getElementById('undo-btn').onclick = undoLast;
 
-//Funções de desenho
 function redraw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   objects.forEach(obj => {
@@ -2240,7 +2147,6 @@ function redraw() {
       ctx.moveTo(obj.x1, obj.y1);
       ctx.lineTo(obj.x2, obj.y2);
       ctx.stroke();
-      // ponta
       const angle = Math.atan2(obj.y2 - obj.y1, obj.x2 - obj.x1);
       const arrowSize = 10;
       ctx.beginPath();
@@ -2275,13 +2181,11 @@ function enableTextEditing(obj) {
   div.style.wordBreak = 'break-word';
   div.style.cursor = 'move';
 
-  // evita clique dentro do div fechar outros eventos
   div.addEventListener('mousedown', e => e.stopPropagation());
   div.addEventListener('click', e => e.stopPropagation());
 
   boardContainer.appendChild(div);
 
-  // foco automático
   setTimeout(() => {
     const range = document.createRange();
     const sel = window.getSelection();
@@ -2292,7 +2196,6 @@ function enableTextEditing(obj) {
     div.focus();
   }, 10);
 
-  // movimento do texto
   let isDragging = false;
   let offsetX, offsetY;
 
@@ -2319,11 +2222,10 @@ function enableTextEditing(obj) {
     }
   });
 
-  // função para confirmar edição
   function confirmText() {
     const text = div.innerText.replace(/\u00A0/g, ' ').trim();
     if (text) {
-      obj.text = text;           // atualiza o texto existente
+      obj.text = text;         
       obj.x = parseInt(div.style.left);
       obj.y = parseInt(div.style.top);
       redraw();
@@ -2345,14 +2247,13 @@ function enableTextEditing(obj) {
   });
 }
 
-//Função de desfazer 
 function undoLast() {
   if (objects.length > 0) {
     objects.pop(); 
     redraw();      
   }
 }
-//Eventos do canvas 
+
 canvas.addEventListener('mousedown', e => {
   startX = e.offsetX;
   startY = e.offsetY;
@@ -2366,7 +2267,6 @@ if (currentTool === 'text') {
   const x = startX;
   const y = startY;
 
-  // cria o campo editável
   const div = document.createElement('div');
   div.className = 'temp-text';
   div.contentEditable = 'true';
@@ -2386,13 +2286,11 @@ if (currentTool === 'text') {
   div.style.wordBreak = 'break-word';
   div.style.cursor = 'move';
 
-  // evita que clique dentro do campo feche ele
   div.addEventListener('mousedown', ev => ev.stopPropagation());
   div.addEventListener('click', ev => ev.stopPropagation());
 
   boardContainer.appendChild(div);
 
-  // foco
   setTimeout(() => {
     const range = document.createRange();
     const sel = window.getSelection();
@@ -2403,12 +2301,10 @@ if (currentTool === 'text') {
     div.focus();
   }, 10);
 
-  //Movimento do texto antes de confirmar
   let isDragging = false;
   let offsetX, offsetY;
 
   div.addEventListener('mousedown', (e) => {
-    // só mover se não estiver editando texto (ou seja, se não clicar em meio ao texto)
     if (document.activeElement !== div) return;
     e.preventDefault();
     isDragging = true;
@@ -2431,7 +2327,6 @@ if (currentTool === 'text') {
     }
   });
 
-  // Confirmar texto (Enter ou clicar fora)
   function confirmTextFromDiv() {
     const text = div.innerText.replace(/\u00A0/g, ' ').trim();
     if (text) {
@@ -2488,7 +2383,6 @@ canvas.addEventListener('mouseup', e => {
   }
 });
 
-//Seleção e movimentação
 canvas.addEventListener('dblclick', e => {
   const x = e.offsetX, y = e.offsetY;
   for (let i = objects.length - 1; i >= 0; i--) {
@@ -2511,8 +2405,6 @@ canvas.addEventListener('dblclick', e => {
   }
 });
 
-
-//Botões de ferramentas 
 const toolButtons = {
   pen: document.getElementById('pen-btn'),
   line: document.getElementById('line-btn'),
@@ -2524,7 +2416,6 @@ const toolButtons = {
 
 function activateTool(tool) {
   if (currentTool === tool) {
-    // se clicar no mesmo botão, desativa
     currentTool = null;
     Object.values(toolButtons).forEach(btn => btn.classList.remove('active-tool'));
   } else {
@@ -2535,13 +2426,11 @@ function activateTool(tool) {
   }
 }
 
-// Eventos
 toolButtons.pen.onclick = () => activateTool('pen');
 toolButtons.line.onclick = () => activateTool('line');
 toolButtons.arrow.onclick = () => activateTool('arrow');
 toolButtons.text.onclick = () => activateTool('text');
 
-//Clicar fora da área desativa ferramenta
 document.addEventListener('click', e => {
   const boardArea = document.getElementById('board-area');
   if (!boardArea.contains(e.target) && !Object.values(toolButtons).includes(e.target)) {
@@ -2569,20 +2458,17 @@ document.addEventListener('click', e => {
         reader.readAsDataURL(file);
     });
 
-    // Abrir modal de busca
+    // modal de busca
 searchBoardBtn.addEventListener("click", () => {
   modalSearchBoard.style.display = "flex";
   searchBoardInput.value = "";
   searchBoardResultsContainer.innerHTML = "";
 });
 
-// Abre modal
+// abre/fecha modal fundo
 addFundoBtn.addEventListener("click", () => fundoModal.style.display = "flex");
-
-// Fecha modal
 closeFundoModal.addEventListener("click", () => fundoModal.style.display = "none");
 
-// Seleção de fundo pré-definido
 fundoList.querySelectorAll(".fundoOption").forEach(img => {
   img.addEventListener("click", () => {
     boardArea.style.backgroundImage = `url(${img.src})`;
@@ -2591,13 +2477,12 @@ fundoList.querySelectorAll(".fundoOption").forEach(img => {
   });
 });
 
-// Função que envia a imagem em Base64 para o backend (que manda pro Cloudinary)
-// Função que envia a imagem em Base64 para o backend (que manda pro Cloudinary)
+
+// envia a imagem em Base64 para o backend (que manda pro cloudinary)
 async function uploadFundoParaCloudinary(base64Image) {
   const token = localStorage.getItem("token");
 
   try {
-    // Exibe o modal de carregamento
     loadingModal.style.display = "flex";
 
     const res = await fetch("https://boardmakerback.onrender.com/upload-fundo", {
@@ -2617,12 +2502,11 @@ async function uploadFundoParaCloudinary(base64Image) {
     alert("Erro ao enviar imagem de fundo. Verifique a conexão ou o tamanho da imagem.");
     throw err;
   } finally {
-    // Sempre fecha o modal mesmo que ocorra erro
     loadingModal.style.display = "none";
   }
 }
 
-// Evento para upload de fundo customizado
+// upload de fundo customizado
 uploadFundo.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -2631,12 +2515,10 @@ uploadFundo.addEventListener("change", async (e) => {
 
   reader.onload = async () => {
     try {
-      // Mostra o modal antes de começar a enviar
       loadingModal.style.display = "flex";
 
       const uploadedUrl = await uploadFundoParaCloudinary(reader.result);
 
-      // Cria um novo objeto Image para garantir que o fundo carregue antes de aplicar
       const img = new Image();
       img.src = uploadedUrl;
       img.onload = () => {
@@ -2660,11 +2542,11 @@ uploadFundo.addEventListener("change", async (e) => {
 });
 
 
-    // IDs autorizados a verificar
+    // ids com permissão para verificação
     const usuariosVerificadores = ["68f2ac44a5bc316f26869a43"];
     const userId = localStorage.getItem("userId");
 
-// Função para renderizar cards de boards
+// renderizar boards(card)
 function renderBoards(boards) {
   searchBoardResultsContainer.innerHTML = "";
 
@@ -2676,8 +2558,6 @@ function renderBoards(boards) {
   boards.forEach(board => {
     const card = document.createElement("div");
     card.classList.add("card");
-
-    // imagem
     const img = document.createElement("img");
     img.src = board.imagem?.startsWith('http')
       ? board.imagem
@@ -2687,18 +2567,16 @@ function renderBoards(boards) {
     img.style.height = "150px";
     img.style.objectFit = "contain";
 
-    // nome
     const nome = document.createElement("span");
     nome.textContent = board.nome;
     nome.classList.add("board-nome");
 
-    // botão adicionar
     const btn = document.createElement("button");
     btn.textContent = "Adicionar à minha biblioteca";
     btn.dataset.id = board._id;
     btn.classList.add("addBoardBtn");
 
-    // botão verificar (somente verificadores)
+    // botão verificar (somente usuarios verificados)
     if (!board.verified && usuariosVerificadores.includes(userId)) {
       const verifyBtn = document.createElement("button");
       verifyBtn.textContent = "Verificar";
@@ -2742,7 +2620,7 @@ function renderBoards(boards) {
         });
       if (res.ok) {
   alert("Board adicionado à sua biblioteca!");
-  await carregarBoards(); // ✅ atualiza a lista sem recarregar
+  await carregarBoards(); 
   btn.disabled = true;
   btn.textContent = "Adicionado";
 } else {
@@ -2756,9 +2634,8 @@ function renderBoards(boards) {
   });
 }
 
-// ========================
-// Busca principal (quando clica em pesquisar)
-// ========================
+
+// busca principal
 const searchBoards = async () => {
   const query = searchBoardInput.value.trim();
   if (!query) {
@@ -2786,9 +2663,6 @@ const searchBoards = async () => {
   }
 };
 
-// ========================
-// Buscar automaticamente ao abrir o modal
-// ========================
 searchBoardBtn.addEventListener("click", async () => {
   modalSearchBoard.style.display = "flex";
   searchBoardInput.value = "";
@@ -2817,7 +2691,6 @@ searchBoardBtn.addEventListener("click", async () => {
 searchBoardInput.addEventListener("input", async () => {
   const query = searchBoardInput.value.trim();
 
-  // Se o campo estiver vazio → recarrega todos os boards
   if (query === "") {
     searchBoardResultsContainer.innerHTML = "<p>Carregando boards...</p>";
     try {
@@ -2831,7 +2704,6 @@ searchBoardInput.addEventListener("input", async () => {
       }
 
       const boards = await res.json();
-      // Ordena alfabeticamente
       boards.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
       renderBoards(boards);
 
@@ -2841,22 +2713,16 @@ searchBoardInput.addEventListener("input", async () => {
     }
   }
 });
-// ========================
-// Fechar modal
-// ========================
+
 cancelSearchBoardBtn.addEventListener("click", () => {
   modalSearchBoard.style.display = "none";
 });
 
-// ========================
-// Botão dentro do modal para pesquisar
-// ========================
 const triggerSearchBoard = document.getElementById("triggerSearchBoard");
 if (triggerSearchBoard) triggerSearchBoard.addEventListener("click", searchBoards);
 
-// ---------- Buscar / mostrar pedais (reutilizável) ----------
 
-
+//buscar e mostrar pedais
 async function fetchPedais(search = "") {
   const url = search
     ? `https://boardmakerback.onrender.com/pedais/todos?search=${encodeURIComponent(search)}`
@@ -2874,7 +2740,6 @@ function renderPedaisList(pedais) {
     return;
   }
 
-  // Ordena alfabeticamente por nome
   pedais.sort((a, b) => (a.nome || "").localeCompare(b.nome || "", "pt-BR"));
 
   pedais.forEach(pedal => {
@@ -2903,7 +2768,7 @@ function renderPedaisList(pedais) {
     btn.dataset.id = pedal._id;
     btn.classList.add("addPedalBtn");
 
-    // Botão verificar (só visual aqui; ação tratada por delegação)
+    // botão verificar (obs:verificar pedais e boards é para atualizações futuras)
     let verifyBtn = null;
     if (!pedal.verified && usuariosVerificadores.includes(userId)) {
       verifyBtn = document.createElement("button");
@@ -2922,7 +2787,7 @@ function renderPedaisList(pedais) {
   });
 }
 
-// ---------- Abrir modal: carrega todos os pedais ordenados ----------
+// modal que carrega todos os pedais ordenados 
 if (typeof searchPedalBtn !== "undefined" && searchPedalBtn) {
   searchPedalBtn.addEventListener("click", async () => {
     modalSearchPedal.style.display = "flex";
@@ -2930,7 +2795,7 @@ if (typeof searchPedalBtn !== "undefined" && searchPedalBtn) {
     searchResultsContainer.innerHTML = "<p>Carregando...</p>";
 
     try {
-      const pedais = await fetchPedais(); // sem query => traz todos
+      const pedais = await fetchPedais(); 
       renderPedaisList(pedais);
     } catch (err) {
       console.error(err);
@@ -2939,7 +2804,7 @@ if (typeof searchPedalBtn !== "undefined" && searchPedalBtn) {
   });
 }
 
-// ---------- Botão de busca (pesquisa pelo texto) ----------
+// botão de busca 
 if (typeof searchBtn !== "undefined" && searchBtn) {
   searchBtn.addEventListener("click", async () => {
     const query = searchInput.value.trim();
@@ -2966,7 +2831,7 @@ searchInput.addEventListener("input", async () => {
   }
 });
 
-// ---------- Delegação de eventos para os botões dentro do container ----------
+//botões dentro do container 
 searchResultsContainer.addEventListener("click", async (e) => {
   const addBtn = e.target.closest(".addPedalBtn");
   if (addBtn) {
@@ -2978,7 +2843,7 @@ searchResultsContainer.addEventListener("click", async (e) => {
       });
 if (res.ok) {
   alert("Pedal adicionado à sua biblioteca!");
-  await carregarPedais(); // ✅ atualiza a lista sem recarregar
+  await carregarPedais();
   addBtn.disabled = true;
   addBtn.textContent = "Adicionado";
 } else {
@@ -2991,7 +2856,7 @@ if (res.ok) {
     return;
   }
   
-
+// botão verificar (obs:verificar pedais e boards é para atualizações futuras)
   const verifyBtn = e.target.closest(".verify-btn");
   if (verifyBtn) {
     const pedalId = verifyBtn.dataset.id;
@@ -3002,7 +2867,7 @@ if (res.ok) {
       });
       if (res.ok) {
         alert("Pedal verificado!");
-        // remove botão verificar
+    
         verifyBtn.remove();
       } else {
         alert("Erro ao verificar pedal");
@@ -3020,8 +2885,8 @@ if (typeof cancelSearchBtn !== "undefined" && cancelSearchBtn) {
     modalSearchPedal.style.display = "none";
   });
 }
- // Salvar novo pedal/board
-// Salvar novo pedal/board
+
+// salvar novo pedal/board
 saveModalBtn.addEventListener("click", async () => {
     const spinner = document.createElement("span");
     spinner.className = "spinner";
@@ -3039,15 +2904,12 @@ saveModalBtn.addEventListener("click", async () => {
     const widthCm = widthVal === "" ? NaN : parseFloat(widthVal);
     const heightCm = heightVal === "" ? NaN : parseFloat(heightVal);
 
-    // === Validação básica ===
     if (!nome || (!file && !imagemUrl)) {
         alert("Nome e imagem são obrigatórios!");
         saveModalBtn.disabled = false;
         spinner.remove();
         return;
     }
-
-    // === Validação obrigatória para AMBOS (boards e pedais) ===
     if (isNaN(widthCm) || isNaN(heightCm) || widthCm <= 0 || heightCm <= 0) {
         alert("Largura e comprimento são obrigatórios!");
         saveModalBtn.disabled = false;
@@ -3094,11 +2956,10 @@ saveModalBtn.addEventListener("click", async () => {
 if (res.ok) {
   alert(`${creatingType} criado com sucesso!`);
 
-  // Atualiza instantaneamente a lista
   if (creatingType === "pedal") {
     await carregarPedais();
   } else {
-    await carregarBoards(); // se tiver função similar
+    await carregarBoards(); 
   }
 
   closeModal();
@@ -3114,17 +2975,14 @@ if (res.ok) {
         spinner.remove();
     }
 });
-  //Carregar pedais e boards 
 
 
-    // Função que busca os pedais do usuário (você já tem)
-  // Reuse sua função utilitária (copie se não estiver no topo)
 function getImageUrl(path) {
   if (!path) return 'https://placehold.co/200x200?text=Sem+Imagem';
   return path.startsWith('http') ? path : `https://boardmakerback.onrender.com${path.startsWith('/') ? path : '/' + path}`;
 }
 
-// ---------- carregarPedais (corrigido) ----------
+// carregar pedais 
 async function carregarPedais() {
   try {
     const res = await fetch('https://boardmakerback.onrender.com/pedais', {
@@ -3137,7 +2995,6 @@ async function carregarPedais() {
     pedais.forEach(pedal => {
       const option = document.createElement('option');
 
-      // guarde a imagem já normalizada (pode ser Cloudinary full URL)
       const imagemNormalizada = getImageUrl(pedal.imagem);
 
       option.value = JSON.stringify({
@@ -3169,8 +3026,6 @@ async function carregarPedais() {
     pedalSelect.choicesInstance = choices;
     pedalSelect.selectedPedalData = null;
 
-    // já existe handlePedalChange no teu código — garante que ele seja usado
-    // caso não esteja registrado, registra-o aqui:
     function handlePedalChange(e) {
       const val = (e.target && e.target.value) || (e.detail && e.detail.value) || '';
       if (!val || val.trim() === "") {
@@ -3199,7 +3054,7 @@ async function carregarPedais() {
     console.error('Erro ao carregar pedais:', error);
   }
 }
-
+//carregar boards
 async function carregarBoards() {
   try {
     const res = await fetch("https://boardmakerback.onrender.com/boards", { 
@@ -3262,7 +3117,6 @@ boards.reverse().forEach(board => {
       }
     }
 
-    // ✅ Corrigido: não use .catch() aqui
     boardSelect.removeEventListener('change', handleBoardChange);
     boardSelect.addEventListener('change', handleBoardChange);
 
@@ -3275,7 +3129,6 @@ boards.reverse().forEach(board => {
   carregarPedais();
   carregarBoards();
 
-  // Atualizar preview ao selecionar
 pedalSelect.addEventListener("change", () => {
   const val = pedalSelect.value;
   if (!val) {
@@ -3308,7 +3161,7 @@ boardSelect.addEventListener("change", () => {
   }
 });
 
-// Função auxiliar: calcula dimensões em px
+// calcula dimensões em px
 function getDimensions(type, selData, selectedOption) {
     let widthCm = type === 'pedal' ? 8 : 30;
     let heightCm = type === 'pedal' ? 8 : 30;
@@ -3330,7 +3183,7 @@ function getDimensions(type, selData, selectedOption) {
     return { widthCm, heightCm };
 }
 
-// Drag & drop pedais e boards 
+// drag & drop pedais e boards 
 previewPedal.addEventListener('dragstart', e => {
     e.dataTransfer.setData('type', 'pedal');
     e.dataTransfer.setData('src', previewPedal.src);
@@ -3358,7 +3211,6 @@ previewBoard.addEventListener('dragstart', e => {
 
 let currentPedal = null; 
 
-// Função para abrir o modal
 function openSpecModal(pedal) {
   currentPedal = pedal;
   specInput.value = pedal.spec || ''; 
@@ -3366,13 +3218,11 @@ function openSpecModal(pedal) {
   specInput.focus();
 }
 
-// Fechar o modal
 function closeSpecModal() {
   specModal.classList.remove('active');
   currentPedal = null;
 }
 
-// Salvar o spec e fechar
 saveSpecBtn.onclick = () => {
   if (currentPedal) {
     currentPedal.spec = specInput.value;
@@ -3381,16 +3231,13 @@ saveSpecBtn.onclick = () => {
   closeSpecModal();
 };
 
-// Cancelar
 cancelSpecBtn.onclick = closeSpecModal;
 
-// Fechar ao clicar fora do modal
 specModal.onclick = (e) => {
   if (e.target === specModal) closeSpecModal();
 };
 
-  //Carregar pedalboard existente
-// ===== Carregar pedalboard existente =====
+// carregar pedalboard existente
 if (boardId) {
   (async () => {
     try {
@@ -3426,7 +3273,6 @@ if (boardId) {
         });
       }
 
-      // 🔹 só abre o modal inicial se ainda não estiver configurado
       const jaConfigurado = localStorage.getItem("boardConfigured");
       if (!jaConfigurado) {
         modalInicial.style.display = "flex";
@@ -3454,7 +3300,7 @@ if (boardId) {
   })();
 }
 
-// ✅ Função auxiliar universal para tratar imagens (local ou Cloudinary)
+// tratar imagens cloudinary
 function getImageUrl(path) {
   if (!path) return 'https://placehold.co/200x200?text=Sem+Imagem';
   return path.startsWith('http')
@@ -3462,15 +3308,13 @@ function getImageUrl(path) {
     : `https://boardmakerback.onrender.com${path.startsWith('/') ? path : '/' + path}`;
 }
 
-// ====================
-// ✅ Corrigido: carregarItemExistente
-// ====================
+//carregar items existentes 
 function carregarItemExistente(item, type) {
   const wrapper = document.createElement('div');
   wrapper.className = type === 'pedal' ? 'pedal-wrapper' : 'board-wrapper';
   wrapper.style.position = "absolute";
-  wrapper.style.left = (item.x || 0) + 'px';  // absoluto em px
-  wrapper.style.top = (item.y || 0) + 'px';   // absoluto em px
+  wrapper.style.left = (item.x || 0) + 'px';  
+  wrapper.style.top = (item.y || 0) + 'px';   
   wrapper.style.zIndex = item.zIndex || 10;
   wrapper.style.display = "inline-block";
 
@@ -3531,7 +3375,7 @@ function carregarItemExistente(item, type) {
   });
 }
 
-// CARD DE INFO / SIDEBAR
+// card de infos/sidebar
 let pedalInfoCurrent = null; 
 let boardInfoCurrent = null;
 
@@ -3580,7 +3424,6 @@ async function renderBoardInfo(item, wrapper) {
 
   let boardCompleto = null;
   try {
-    // Aqui está o ajuste principal ↓↓↓
     const boardId = item.boardId?._id || item.boardId || item.id || item._id;
     const res = await fetch(`https://boardmakerback.onrender.com/boards/${boardId}`, {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
@@ -3601,7 +3444,6 @@ function hideBoardInfo() {
     boardInfoCurrent = null;
 }
 
-// MODAL / BOTÕES DO CARD
 cardAddSpecBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (!pedalInfoCurrent) return;
@@ -3647,7 +3489,7 @@ document.getElementById('cardRemoveFromBoardBtnBoard').addEventListener('click',
 });
 
 
-// BOTÕES DE ROTACIONAR / ZINDEX
+// rotacionar e zindex
 document.getElementById('cardRotateBtn').addEventListener('click', (e) => {
     e.stopPropagation();
     if (!pedalInfoCurrent) return;
@@ -3697,11 +3539,8 @@ document.getElementById('cardSendBackBtnBoard').addEventListener('click', (e) =>
 });
 
 
-
-// FECHAR CARD QUANDO CLICAR FORA DA SIDEBAR
 const sidebar = document.getElementById('sidebar');
 
-// Clique fora da sidebar fecha os cards
 document.addEventListener('click', (e) => {
     if (!sidebar.contains(e.target)) { // clique fora da sidebar
         hidePedalInfo();
@@ -3709,23 +3548,18 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// ESC fecha os cards
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
         hidePedalInfo();
         hideBoardInfo();
     }
 });
- // clique dentro não fecha
 
-// opcional: ESC fecha também
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") hidePedalInfo();
 });
 
-
-
-//Drop de novos itens
+//drop de itens novos
 boardArea.addEventListener('drop', async e => {
     e.preventDefault();
     const type = e.dataTransfer.getData('type');
@@ -3737,7 +3571,6 @@ boardArea.addEventListener('drop', async e => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    //wrapper principal
     const wrapper = document.createElement('div');
     wrapper.className = type === 'pedal' ? 'pedal-wrapper' : 'board-wrapper';
     wrapper.style.position = "absolute";
@@ -3746,7 +3579,6 @@ boardArea.addEventListener('drop', async e => {
     wrapper.style.zIndex = 10;
     wrapper.style.display = "inline-block";
 
-    //imagem principal
     const el = document.createElement('img');
     const imgPath = src || '/uploads/imagem-placeholder.png';
     el.src = imgPath.startsWith('http')
@@ -3756,7 +3588,6 @@ boardArea.addEventListener('drop', async e => {
     el.style.display = "block";
     el.style.objectFit = "fill";
 
-    //dimensões
     const selData = type === 'pedal' ? pedalSelect.selectedPedalData : boardSelect.selectedBoardData;
     const selectedOption = type === 'pedal' ? pedalSelect.options[pedalSelect.selectedIndex] : boardSelect.options[boardSelect.selectedIndex];
     const { widthCm, heightCm } = getDimensions(type, selData, selectedOption);
@@ -3770,11 +3601,9 @@ boardArea.addEventListener('drop', async e => {
     el.style.width = `${widthPx}px`;
     el.style.height = `${heightPx}px`;
 
-    //rotação e transform
     wrapper.style.transform = 'rotate(0deg)';
     wrapper.style.transformOrigin = 'center center';
 
-    //cria objeto do item 
     const newItem = {
         src: el.src,
         x: parseInt(wrapper.style.left),
@@ -3791,11 +3620,9 @@ boardArea.addEventListener('drop', async e => {
     if (type === 'pedal' && transferredId) newItem.pedalId = transferredId;
     if (type === 'board' && transferredId) newItem.boardId = transferredId;
 
-    //append na tela
     wrapper.appendChild(el);
     boardArea.appendChild(wrapper);
 
-    //salvar no array correto
     if (type === 'pedal') {
         el.ondblclick = () => openSpecModal(newItem);
         placedPedals.push(newItem);
@@ -3803,21 +3630,16 @@ boardArea.addEventListener('drop', async e => {
         placedBoards.push(newItem);
     }
 
-    //tornar arrastável
     makeDraggable(wrapper, type, newItem);
 
-    //clique: seleciona e mostra card lateral
     el.addEventListener("click", (e) => {
         e.stopPropagation();
 
-        // remove seleção anterior
         document.querySelectorAll('.pedal-wrapper, .board-wrapper')
             .forEach(w => w.classList.remove('selected'));
 
-        // adiciona borda azul
         wrapper.classList.add('selected');
 
-        // mostra o card lateral
         if (type === 'pedal') {
             renderPedalInfo(newItem, wrapper);
         } else {
@@ -3828,7 +3650,7 @@ boardArea.addEventListener('drop', async e => {
 
 
  
-  //Função para arrastar pedais, boards e overlay de annotations
+  //função para arrastar pedais, boards 
 function makeDraggable(el, type, item) {
     let offsetX, offsetY, dragging = false;
 
@@ -3884,10 +3706,10 @@ function makeDraggable(el, type, item) {
     }
 }
 
-// Drag para Annotations
+// drag para anotations (atualizações futuras)
 objects.forEach((obj, i) => makeAnnotationDraggable(obj, i));
 
-//BOTÃO DELETAR BOARDS
+//delete boards
 deleteBoardBtn.addEventListener('click', async () => {
   boardCardsContainer.innerHTML = ''; 
 
@@ -3907,19 +3729,16 @@ deleteBoardBtn.addEventListener('click', async () => {
       const card = document.createElement('div');
       card.classList.add('card'); 
 
-      // imagem
       const img = document.createElement('img');
       img.src = board.imagem?.startsWith('http')
         ? board.imagem
         : `https://boardmakerback.onrender.com${board.imagem}`;
       img.alt = board.nome;
 
-      // nome do board
       const nome = document.createElement('span');
       nome.textContent = board.nome;
       nome.classList.add('board-nome');
 
-      // botão excluir
       const btnExcluir = document.createElement('button');
       btnExcluir.textContent = "Excluir";
       btnExcluir.classList.add('trash-btn'); 
@@ -3939,7 +3758,6 @@ deleteBoardBtn.addEventListener('click', async () => {
         }
       });
 
-      // adiciona elementos ao card
       card.appendChild(img);
       card.appendChild(nome);
       card.appendChild(btnExcluir);
@@ -3957,22 +3775,19 @@ cancelDeleteBoardBtn.addEventListener('click', () => {
     modalDeleteBoard.style.display = 'none';
 });
 
-
-//Salvar pedalboard
+//salvar pedalboard
 saveBtn.addEventListener('click', async () => {
     if (!boardMeta.nome) {
         alert("Defina o pedalboard antes de salvar!");
         return;
     }
   const loadingModal = document.getElementById("loadingPedalboardModal");
-    
-    // 🔹 Desabilita o botão para evitar múltiplos cliques
+
     saveBtn.disabled = true;
-    saveBtn.textContent = "Salvando..."; // opcional, muda o texto
-    loadingModal.style.display = "flex"; // mostra modal de loading
+    saveBtn.textContent = "Salvando..."; 
+    loadingModal.style.display = "flex"; 
 
     try {
-        // Gera a imagem da área de pedais
         const canvas = await html2canvas(boardArea, {
             backgroundColor: null,
             scale: 2,
@@ -3982,7 +3797,6 @@ saveBtn.addEventListener('click', async () => {
 
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 
-        // Prepara o FormData
         const formData = new FormData();
         formData.append("nome", boardMeta.nome);
         formData.append("descricao", boardMeta.descricao);
@@ -3990,18 +3804,15 @@ saveBtn.addEventListener('click', async () => {
         formData.append("estilo", JSON.stringify(boardMeta.estilo));
         formData.append("pedais", JSON.stringify(placedPedals));
         formData.append("boards", JSON.stringify(placedBoards));
-        formData.append("imagem", blob, "pedalboard.png"); // imagem do canvas
-              //  Adiciona o fundo (imagem ou cor)
+        formData.append("imagem", blob, "pedalboard.png"); 
         if (currentFundo) {
             formData.append("fundo", currentFundo);
         }
 
-        //  Adiciona a imagem do inputCard
         const inputFile = document.getElementById("inputImagemCard").files[0];
         if (inputFile) {
-            formData.append("imagemCard", inputFile); // envia a imagem do card
+            formData.append("imagemCard", inputFile); 
         }
-//  Salva as anotações (objetos desenhados no canvas)
 if (objects && objects.length > 0) {
   formData.append("annotations", JSON.stringify(objects));
 }
@@ -4028,7 +3839,7 @@ if (objects && objects.length > 0) {
         alert("Erro de conexão ao salvar pedalboard.");
     }
     finally {
-        loadingModal.style.display = "none"; // 🔹 esconde modal
+        loadingModal.style.display = "none"; 
     }
 });
 boardArea.addEventListener("click", () => {
@@ -4040,7 +3851,6 @@ document.addEventListener('click', () => {
   document.querySelectorAll('.action-menu').forEach(m => m.style.display = 'none');
   document.querySelectorAll(".pedal-wrapper.selected, .board-wrapper.selected")
         .forEach(w => w.classList.remove("selected"));
-  // esconde o card quando clica fora
   hidePedalInfo();
 });
 deletePedalBtn.addEventListener('click', async () => {
@@ -4062,7 +3872,6 @@ deletePedalBtn.addEventListener('click', async () => {
             const card = document.createElement("div");
             card.classList.add("card");
 
-            // imagem
             const img = document.createElement("img");
             img.src = pedal.imagem?.startsWith('http') ? pedal.imagem : `https://boardmakerback.onrender.com${pedal.imagem}`;
             img.alt = pedal.nome;
@@ -4070,12 +3879,10 @@ deletePedalBtn.addEventListener('click', async () => {
             img.style.height = "150px";
             img.style.objectFit = "contain"; 
 
-            // nome do pedal
             const nome = document.createElement("span");
             nome.textContent = pedal.nome;
             nome.classList.add("pedal-nome");
 
-            // botão excluir
             const btnExcluir = document.createElement("button");
             btnExcluir.textContent = "Excluir";
             btnExcluir.classList.add("trash-btn");
@@ -4094,7 +3901,6 @@ deletePedalBtn.addEventListener('click', async () => {
                 }
             });
 
-            // adiciona elementos ao card
             card.appendChild(img);
             card.appendChild(nome);
             card.appendChild(btnExcluir);
@@ -4112,8 +3918,6 @@ cancelDeletePedalBtn.addEventListener('click', () => {
     modalDeletePedal.style.display = 'none';
 });
 
-
-// Função para impedir que o clique nos botões do card feche o menu
 function preventMenuClose(btns) {
     btns.forEach(btn => {
         btn.addEventListener('click', e => {
@@ -4126,7 +3930,6 @@ cardBotoes.addEventListener('mousedown', () => {
     cardBotoes.style.zIndex = 10000; 
 });
 
-// Mostrar modal de exclusão de pedais
 deletePedalBtn.addEventListener('click', async () => {
   pedalCardsContainer.innerHTML = ''; 
 
@@ -4146,17 +3949,14 @@ deletePedalBtn.addEventListener('click', async () => {
   const card = document.createElement('div');
   card.classList.add('card'); 
 
-  // imagem
   const img = document.createElement('img');
   img.src = pedal.imagem?.startsWith('http') ? pedal.imagem : `https://boardmakerback.onrender.com${pedal.imagem}`;
   img.alt = pedal.nome;
 
-  // nome do pedal
   const nome = document.createElement('span');
   nome.textContent = pedal.nome;
   nome.classList.add('pedal-nome');
 
-  // botão excluir
   const btnExcluir = document.createElement('button');
   btnExcluir.textContent = "Excluir";
   btnExcluir.classList.add('trash-btn'); 
@@ -4175,7 +3975,6 @@ deletePedalBtn.addEventListener('click', async () => {
     }
   });
 
-  // adiciona elementos ao card
   card.appendChild(img);
   card.appendChild(nome);
   card.appendChild(btnExcluir);
@@ -4191,11 +3990,9 @@ deletePedalBtn.addEventListener('click', async () => {
 });
 
 
- 
-// Fechar modais
+//fecha modais
 cancelDeletePedalBtn.addEventListener('click', () => modalDeletePedal.style.display = 'none');
 cancelDeleteBoardBtn.addEventListener('click', () => modalDeleteBoard.style.display = 'none');
- // Função para salvar o canvas como imagem
     function salvarImagem() {
         const canvas = document.getElementById('boardCanvas');
         const link = document.createElement('a');
@@ -4204,7 +4001,6 @@ cancelDeleteBoardBtn.addEventListener('click', () => modalDeleteBoard.style.disp
         link.click();
     }
 
-    // Ligar o botão à função
     const saveImageBtn = document.getElementById('saveBtn');
     saveImageBtn.addEventListener('click', salvarImagem);
 

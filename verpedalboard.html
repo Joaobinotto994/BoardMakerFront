@@ -19,22 +19,22 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 8px; /* menos espaçamento entre os elementos */
+    gap: 8px; 
     border-right: 2px solid #222;
 }
 
 #sidebar h2 {
     font-size: 18px;
     font-weight: bold;
-    margin: 0 0 5px 0; /* remove margens extras */
+    margin: 0 0 5px 0; 
     color: #e50914;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 #sidebar p {
-    margin: 2px 0; /* deixa os <p> bem próximos */
-    line-height: 1.3; /* ajusta altura da linha */
+    margin: 2px 0; 
+    line-height: 1.3; 
     font-size: 14px;
 }
 
@@ -88,18 +88,17 @@
         }
 
 #board-area {
-    width: 1260px;       /* largura fixa em px */
-    height: 700px;       /* altura fixa em px */
+    width: 1260px;       
+    height: 700px;      
     background: #1c1c1c;
     border: 3px dashed #333;
     border-radius: 15px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(0,0,0,0.7);
-    /* 🔹 fixo para não alterar com zoom do navegador */
     transform: scale(1);
     transform-origin: top left;
-    background-size: 100% 100%; /* ou 'contain' */
+    background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -131,7 +130,7 @@
 
 
         .placed-pedal, .placed-board {
-    width: 80px; /* ajuste para o tamanho que você quer */
+    width: 80px; 
     height: auto;
     position: absolute;
     cursor: grab;
@@ -319,29 +318,26 @@
   background: #b52b27;
 }
 
-/* Modal de Board e Pedal */
 #modalDeleteBoard .modal-content,
 #modalDeletePedal .modal-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 80vh; /* limita altura do modal */
+  max-height: 80vh; 
   padding: 20px;
-  gap: 15px; /* espaço entre título, cards e botão */
+  gap: 15px; 
 }
 
-/* Container de cards com rolagem */
 .cards-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
   width: 100%;
-  max-height: 300px; /* altura máxima antes de rolar */
+  max-height: 300px; 
   overflow-y: auto;
 }
 
-/* Card individual */
 .cards-container .card-item {
   display: flex;
   flex-direction: column;
@@ -359,19 +355,16 @@
   object-fit: cover;
 }
 
-
-/* ====== FOOTER FIXO DO SIDEBAR ====== */
 #sidebar-footer {
-  margin-top: auto; /* empurra para baixo do sidebar */
+  margin-top: auto; 
   display: flex;
   gap: 7px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
-/* Botão Adicionar ocupa 70% */
 #addBibliotecaBtn {
-  flex: 9; /* 70% do espaço */
+  flex: 9; 
   background: #f70000;
   color: #fff;
   font-weight: bold;
@@ -385,9 +378,8 @@
   transform: scale(1.03);
 }
 
-/* Botão Voltar ocupa 30% */
 #voltarBtn {
-  flex: 1; /* 30% do espaço */
+  flex: 1; 
   background: #888;
   color: #fff;
   font-weight: bold;
@@ -401,8 +393,6 @@
   transform: scale(1.03);
 }
 
-
-/* ===== PREVIEW DO PEDAL ===== */
 #pedalPreview {
   background: #111;
   border-radius: 12px;
@@ -410,7 +400,7 @@
   margin: 10px 0;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  display: none; /* só aparece quando um pedal é clicado */
+  display: none; 
 }
 
 #pedalPreview .preview {
@@ -456,13 +446,12 @@
   color: #ccc;
   text-align: left;
   white-space: pre-wrap;
-  max-height: 180px; /* 🔹 limita altura máxima do texto */
-  overflow-y: auto;  /* 🔹 ativa scroll vertical apenas dentro do texto */
-  scrollbar-width: thin; /* 🔹 scrollbar discreto no Firefox */
-  scrollbar-color: #666 #1e1e1e; /* 🔹 cor do scroll */
+  max-height: 180px; 
+  overflow-y: auto;  
+  scrollbar-width: thin; 
+  scrollbar-color: #666 #1e1e1e; 
 }
 
-/* Scrollbar estilizado (para Chrome/Edge/Safari) */
 #previewSpec::-webkit-scrollbar {
   width: 8px;
 }
@@ -475,13 +464,13 @@
 #previewSpec::-webkit-scrollbar-thumb:hover {
   background: #888;
 }
-/* 🔹 Destaque azul quando um pedal é clicado */
+
 .placed-pedal.selected {
-  outline: 3px solid #007bff; /* cor da borda */
-  outline-offset: 6px; /* 🔹 distância maior da borda pro pedal */
+  outline: 3px solid #007bff;
+  outline-offset: 6px; 
   border-radius: 4px;
-  box-shadow: 0 0 0 6px rgba(0, 123, 255, 0.4);/* 🔹 brilho mais largo */
-  transform: scale(1.08); /* leve aumento */
+  box-shadow: 0 0 0 6px rgba(0, 123, 255, 0.4);
+  transform: scale(1.08); 
   transition: 
     transform 0.25s ease-in-out,
     box-shadow 0.25s ease-in-out,
@@ -498,7 +487,6 @@
   <p><strong>Descrição:</strong> <span id="descricaoPedalboard"></span></p>
   <p><strong>Clique nos pedais para informações e specs!!</strong></p>
 
-    <!-- Área dinâmica de preview do pedal -->
   <div id="pedalPreview">
     <div class="preview">
       <img id="previewImg" src="" alt="Preview do pedal">
@@ -508,13 +496,11 @@
     <p id="previewSpec"></p>
   </div>
 
-  <!-- Footer fixo dos botões -->
   <div id="sidebar-footer">
     <button id="addBibliotecaBtn">Add. à minha Biblioteca</button>
     <button id="voltarBtn">🚪</button>
   </div>
 </div>
-
   <div id="board">
     <div id="board-area"></div>
   </div>
@@ -533,7 +519,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // Busca pedalboard pelo ID
     const res = await fetch(`${BASE_URL}/pedalboards/${boardId}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -542,22 +527,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const board = await res.json();
 
-    // Preenche sidebar
     document.getElementById("nomePedalboard").textContent = board.nome;
     document.getElementById("usuarioPedalboard").textContent = board.usuario?.nome || "Desconhecido";
     document.getElementById("artistaPedalboard").textContent = board.artista || "—";
     document.getElementById("descricaoPedalboard").textContent = board.descricao || "Sem descrição";
 
-    // Seleciona área do board
     const boardArea = document.getElementById("board-area");
 
-    // ===== APLICAR FUNDO =====
-// ===== APLICAR FUNDO =====
 let fundoUrl = board.fundo || '';
 if (fundoUrl) {
-  // Se for base64, deixa como está
   if (!/^data:image/.test(fundoUrl)) {
-    // Se não começar com http ou https, adiciona BASE_URL
     if (!/^https?:\/\//.test(fundoUrl)) {
       fundoUrl = fundoUrl.startsWith('/') ? `${BASE_URL}${fundoUrl}` : `${BASE_URL}/${fundoUrl}`;
     }
@@ -571,12 +550,11 @@ if (fundoUrl) {
   boardArea.style.backgroundColor = '#1c1c1c';
 }
 
-    const scale = 10; // 1cm = 10px
+    const scale = 10; 
 
 function criarItemVisual(item, type) {
   const el = document.createElement("img");
 
-  // Ajusta src com BASE_URL
   let src = item.src || '';
   if (src && !src.startsWith('http')) {
     src = src.startsWith('/') ? `${BASE_URL}${src}` : `${BASE_URL}/${src}`;
@@ -596,7 +574,6 @@ function criarItemVisual(item, type) {
   el.style.transform = `rotate(${item.rotation || 0}deg)`;
   el.style.zIndex = item.zIndex || 10;
 
-  // fallback caso a imagem quebre
   el.onerror = () => {
     el.src = type === "pedal"
       ? `${BASE_URL}/uploads/imagem-placeholder.png`
@@ -605,20 +582,15 @@ function criarItemVisual(item, type) {
 
   boardArea.appendChild(el);
 
-  // === Evento de clique para mostrar o preview do pedal ===
-
 el.addEventListener("click", async (e) => {
   if (type !== "pedal") return;
 
-  e.stopPropagation(); // evita propagação
+  e.stopPropagation(); 
 
-  // 🔹 Remove seleção anterior
   document.querySelectorAll('.placed-pedal').forEach(p => p.classList.remove('selected'));
 
-  // 🔹 Marca este pedal como selecionado
   el.classList.add('selected');
 
-  // === Mantém seu preview funcionando normalmente ===
   const preview = document.getElementById("pedalPreview");
   const img = document.getElementById("previewImg");
   const nome = document.getElementById("previewNome");
@@ -661,16 +633,10 @@ el.addEventListener("click", async (e) => {
 });
 }
 
-
-    // Renderiza pedais
     board.pedais?.forEach(p => criarItemVisual(p, "pedal"));
-    // Renderiza boards
     board.boards?.forEach(b => criarItemVisual(b, "board"));
 
-
-
- // ===== Renderizar Annotations (Anotações) =====
-// ===== Renderizar Annotations (exatamente como no editor) =====
+// renderizar annotations, ajuste para o futuro
 if (board.annotations && Array.isArray(board.annotations)) {
   const canvas = document.createElement('canvas');
   canvas.id = 'draw-canvas';
@@ -681,13 +647,12 @@ if (board.annotations && Array.isArray(board.annotations)) {
   canvas.style.left = '0';
   canvas.style.width = '100%';
   canvas.style.height = '100%';
-  canvas.style.pointerEvents = 'none'; // só visualização
+  canvas.style.pointerEvents = 'none'; 
   canvas.style.zIndex = '50';
   boardArea.appendChild(canvas);
 
   const ctx = canvas.getContext('2d');
 
-  // Copia exatamente como no editor
   const objects = board.annotations.map(obj => ({ ...obj })); 
 
   function redraw() {
@@ -748,7 +713,6 @@ if (board.annotations && Array.isArray(board.annotations)) {
     alert("Erro ao carregar o pedalboard.");
   }
 
-  // Botões
   document.getElementById("voltarBtn").addEventListener("click", () => {
     window.location.href = "telaPrincipal.html";
   });
@@ -767,7 +731,6 @@ const res = await fetch(`${BASE_URL}/pedalboards/duplicar/${boardId}`, {
     const data = await res.json();
     console.log("Novo ID:", data.novoId);
 
-    // Redireciona para o novo pedalboard
     window.location.href = `verpedalboard.html?id=${data.novoId}`;
 
   } catch (err) {
